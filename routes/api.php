@@ -5,6 +5,8 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\panel\LanguageController;
 use App\Http\Controllers\panel\LanguagemotherController;
 use App\Http\Controllers\panel\PeriodController;
+use App\Http\Controllers\panel\LevelController;
+use App\Http\Controllers\panel\LessonController;
 
 /*
 |--------------------------------------------------------------------------
@@ -24,3 +26,6 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 Route::apiResource('languagemother', LanguagemotherController::class);
 Route::apiResource('language', LanguageController::class);
 Route::apiResource('period', PeriodController::class);
+Route::apiResource('level', LevelController::class);
+Route::apiResource('lesson', LessonController::class);
+Route::get('lesson/changeFreeStatus', [LessonController::class,'changeFreeStatus']);

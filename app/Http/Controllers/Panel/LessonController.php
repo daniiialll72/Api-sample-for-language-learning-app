@@ -2,15 +2,17 @@
 
 namespace App\Http\Controllers\panel;
 
-use App\Models\User;
-use App\Models\Language;
+use App\Models\Lesson;
+use App\Models\Period;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
-use App\Models\Languagemother;
+use Illuminate\Validation\Rule;
 use App\Http\Controllers\Controller;
-use App\Http\Resources\LanguageResource;
+use App\Http\Resources\LevelResource;
+use App\Http\Resources\LessonResource;
+use Illuminate\Support\Facades\Session;
 
-class LanguageController extends Controller
+class LessonController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -18,34 +20,26 @@ class LanguageController extends Controller
      * @return \Illuminate\Http\Response
      */
 
-
-    // public function user_language_set(User $user)
-    // {
-    //     return view('panel.languages.languageuser' , compact('user')) ;
-
-    // }
-
-
     public function index(Request $request)
     {
 
         try {
-            $languages = Language::query();
+            $lessons = Lesson::query();
 
             if ($keyword = request('search')) {
 
-                $languages =  $languages->where(function ($query) use ($keyword) {
-                    $query->where('description', 'LIKE', '%' . $keyword . '%')
-                        ->Orwhere('shortdescription', 'LIKE', '%' . $keyword . '%')
-                        ->Orwhere('explainlanguage', 'LIKE', '%' . $keyword . '%');
+                $lessons =  $lessons->where(function ($query) use ($keyword) {
+                    $query->where('title', 'LIKE', '%' . $keyword . '%')
+                        ->Orwhere('description', 'LIKE', '%' . $keyword . '%');
                 });
             }
-            if ($keyword = request('languagemother_id')) {
-                $languages = $languages->whereLanguagemother_id($request->language_id);
+            if ($keyword = request('level_id')) {
+
+                $lessons = $lessons->whereLevel_id($request->level_id);
             }
             return response()->json([
                 'status' => true,
-                'data' => LanguageResource::collection($languages->paginate($request->input('per_page') ? $request->input('per_page') : 10)),
+                'data' => LessonResource::collection($lessons->paginate($request->input('per_page') ? $request->input('per_page') : 10)),
             ], Response::HTTP_OK);
         } catch (\Throwable $th) {
             return response()->json([
@@ -65,15 +59,15 @@ class LanguageController extends Controller
 
         try {
             $data = $request->validate([
-                'shortdescription' => ['required', 'string', 'max:255'],
+                'title' => ['required', 'string', 'max:255', 'unique:levels'],
                 'description' => ['required'],
-                'explainlanguage' => ['required', 'string', 'max:255'],
                 'image' => ['required', 'string', 'max:255'],
+                'period_id' => ['required', 'string', 'max:255'],
+                'language_id' => ['required', 'string', 'max:255'],
+                'level_id' => ['required', 'string', 'max:255'],
             ]);
 
-            $data['languagemother_id'] = $request->languagemother_id;
-
-            Language::create($data);
+            Lesson::create($data);
 
             return response()->json([
                 'status' => true,
@@ -85,27 +79,23 @@ class LanguageController extends Controller
             ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
-
     /**
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\Language  $language
+     * @param  \App\Models\Level  $level
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Language $language)
+    public function update(Request $request, Lesson $lesson)
     {
-
         try {
-
             $data = $request->validate([
-                'shortdescription' => ['required', 'string', 'max:255'],
+                'title' => ['required', 'string', 'max:255',  Rule::unique('lessons', 'title')->ignore($lesson->id)],
                 'description' => ['required'],
-                'explainlanguage' => ['required', 'string'],
                 'image' => ['required', 'string', 'max:255'],
             ]);
 
-            $language->update($data);
+            $lesson->update($data);
 
             return response()->json([
                 'status' => true,
@@ -121,16 +111,26 @@ class LanguageController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Models\Language  $language
+     * @param  \App\Models\Level  $level
      * @return \Illuminate\Http\Response
      */
     public function destroy(Request $request)
     {
-        try {
-            $language = Language::find($request->id);
-            $language->delete();
+        $lesson = Lesson::find($request->id);
+        $lesson->delete();
 
-            return response()->json(['success' => 'حذف با موفقیت انجام شد']);
+        return response()->json(['success' => 'حذف با موفقیت انجام شد']);
+    }
+
+    public function changeFreeStatus(Request $request)
+    {
+
+        try {
+            $lesson = Lesson::find($request->id);
+
+            $lesson->freeornot == '0' ? $lesson->update(['freeornot' => '1']) : $lesson->update(['freeornot' => '0']);
+
+            return response()->json(['success' => ' با موفقیت انجام شد']);
         } catch (\Throwable $th) {
             return response()->json([
                 'status' => false,
