@@ -2,12 +2,13 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\panel\LanguageController;
-use App\Http\Controllers\panel\LanguagemotherController;
-use App\Http\Controllers\panel\PeriodController;
+use App\Http\Controllers\panel\PartController;
 use App\Http\Controllers\panel\LevelController;
 use App\Http\Controllers\panel\LessonController;
-use App\Http\Controllers\panel\PartController;
+use App\Http\Controllers\panel\PeriodController;
+use App\Http\Controllers\panel\SliderController;
+use App\Http\Controllers\panel\LanguageController;
+use App\Http\Controllers\panel\LanguagemotherController;
 
 /*
 |--------------------------------------------------------------------------
@@ -32,7 +33,13 @@ Route::apiResource('period', PeriodController::class);
 
 Route::apiResource('level', LevelController::class);
 
-Route::get('lesson/changeFreeStatus', [LessonController::class,'changeFreeStatus']);
+Route::get('lesson/changeFreeStatus', [LessonController::class, 'changeFreeStatus']);
 Route::apiResource('lesson', LessonController::class);
 
 Route::apiResource('part', PartController::class);
+
+Route::group(['prefix' => 'sliders'], function () {
+    Route::get('/', [SliderController::class, 'get']);
+    Route::post('/storeSimpleSlider', [SliderController::class, 'storeSimpleSlider']);
+    Route::post('/storeMultiSlider', [SliderController::class, 'storeMultiSlider']);
+});
