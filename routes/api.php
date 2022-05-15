@@ -38,8 +38,10 @@ Route::apiResource('lesson', LessonController::class);
 
 Route::apiResource('part', PartController::class);
 
-Route::group(['prefix' => 'sliders'], function () {
-    Route::get('/', [SliderController::class, 'get']);
-    Route::post('/storeSimpleSlider', [SliderController::class, 'storeSimpleSlider']);
-    Route::post('/storeMultiSlider', [SliderController::class, 'storeMultiSlider']);
-});
+Route::apiResource('slider', SliderController::class);
+
+// Route::group(['prefix' => 'sliders'], function () {
+//     Route::get('/', [SliderController::class, 'get']);
+//     Route::post('/storeSimpleSlider', [SliderController::class, 'storeSimpleSlider']);
+//     Route::post('/storeMultiSlider', [SliderController::class, 'storeMultiSlider']);
+// });

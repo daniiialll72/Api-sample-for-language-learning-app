@@ -54,7 +54,8 @@ class SliderController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function storeSimpleSlider(Request $request)
+  
+    public function store(Request $request)
     {
 
         try {
@@ -66,42 +67,7 @@ class SliderController extends Controller
 
             ]);
 
-            $data['user_id'] = Auth::id();
-            $data['image'] = $request->image;
-            $data['voice'] = $request->voice;
-            $data['title'] = $request->title;
-
-            Slider::create($data);
-
-            return response()->json([
-                'status' => true,
-            ], Response::HTTP_CREATED);
-        } catch (\Throwable $th) {
-            return response()->json([
-                'status' => false,
-                'errors' => [$th->getMessage()]
-            ], Response::HTTP_INTERNAL_SERVER_ERROR);
-        }
-    }
-
-    public function storeMultiSlider(Request $request)
-    {
-
-        try {
-
-            $data = $request->validate([
-
-                'description' => 'required',
-                'question' => 'required',
-                'oriented' => 'required',
-                'successmessage' => 'required',
-                'failmessage' => 'required',
-                'kind' => 'required',
-                'part_id' => 'required',
-
-            ]);
-
-            $data['user_id'] = Auth::id();
+            $data['user_id'] = '31';
             $data['image'] = $request->image;
             $data['voice'] = $request->voice;
             $data['title'] = $request->title;
@@ -110,49 +76,22 @@ class SliderController extends Controller
 
             $check = 0;
 
-            if ($request->choice == "imagewithtext") {
-
-
-                foreach ($request->answers as $answer) {
-
-                    $slideranswer = new Slideranswer(
-                        [
-                        'answertext' => $answer['answerthisquestion'],
-                        'image' => $answer['image'],
-                    ]);
-
-                    $slider->slideranswers()->save($slideranswer);
-                }
-
-                $check = 1;
-            }
-            if ($request->choice == "voicewithtext") {
-
+            if ($request->answers) {
 
                 foreach ($request->answers as $answer) {
 
                     $slideranswer = new Slideranswer(
                         [
-                        'answertext' => $answer['answerthisquestion'],
-                        'voice' => $answer['voice'],
+                        'answertext' => isset($answer['answerthisquestion']) ? $answer['answerthisquestion'] : '',
+                        'image' => isset($answer['image']) ? $answer['image'] : '' ,
+                        'voice' => isset($answer['voice']) ? $answer['voice'] : '' ,
                     ]);
 
                     $slider->slideranswers()->save($slideranswer);
-                }
 
-                $check = 1;
-            }
-            if ($request->choice == "text") {
-
-
-                foreach ($request->answers as $answer) {
-
-                    $slideranswer = new Slideranswer(
-                        [
-                        'answertext' =>$answer['answerthisquestion'],
-                    ]);
-
-                    $slider->slideranswers()->save($slideranswer);
+                    if($answer['selected'] === 'true'){
+                        $slider->update(['answer' => $slideranswer->id]);
+                    }
                 }
 
                 $check = 1;
@@ -161,7 +100,10 @@ class SliderController extends Controller
             if ($check == 0) {
 
                 $slider->delete();
-                return back()->withErrors(['msg' => 'میبایست یک جواب را وارد کنید']);
+                return response()->json([
+                    'status' => false,
+                    'message' => 'Answers are empty'
+                ], Response::HTTP_CREATED);
             }
 
             return response()->json([
@@ -175,19 +117,53 @@ class SliderController extends Controller
         }
     }
 
-    public function update(Request $request, Period $period)
+    public function update(Request $request, Slider $slider)
     {
 
         try {
-
             $data = $request->validate([
-                'title' => ['required', 'string', 'max:255',  Rule::unique('periods', 'title')->ignore($period->id)],
-                'description' => ['required'],
-                'image' => ['required', 'string', 'max:255'],
+
+                'description' => 'required',
+                'kind' => 'required',
+                'part_id' => 'required',
 
             ]);
 
-            $period->update($data);
+            $data['user_id'] = '31';
+            $data['image'] = $request->image;
+            $data['voice'] = $request->voice;
+            $data['title'] = $request->title;
+
+            $slider->update($data);
+
+            $check = 0;
+
+            if ($request->answers) {
+
+                foreach ($request->answers as $answer) {
+
+                    $slider->slideranswers()->updateOrCreate([
+                        'answertext' => isset($answer['answerthisquestion']) ? $answer['answerthisquestion'] : '',
+                        'image' => isset($answer['image']) ? $answer['image'] : '' ,
+                        'voice' => isset($answer['voice']) ? $answer['voice'] : '' ,
+                    ]);
+
+                    // if($answer['selected'] === 'true'){
+                    //     $slider->update(['answer' => $slideranswer->id]);
+                    // }
+                }
+
+                $check = 1;
+            }
+
+            if ($check == 0) {
+
+                $slider->delete();
+                return response()->json([
+                    'status' => false,
+                    'message' => 'Answers are empty'
+                ], Response::HTTP_CREATED);
+            }
 
             return response()->json([
                 'status' => true,
@@ -209,8 +185,9 @@ class SliderController extends Controller
     public function destroy(Request $request)
     {
         try {
-            $period = Period::find($request->id);
-            $period->delete();
+            $slider = Slider::find($request->id);
+            $slider->slideranswers()->delete();
+            $slider->delete();
 
             return response()->json(['success' => 'حذف با موفقیت انجام شد']);
         } catch (\Throwable $th) {
