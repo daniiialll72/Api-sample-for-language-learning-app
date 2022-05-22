@@ -41,7 +41,7 @@ class LanguageController extends Controller
                 });
             }
             if ($keyword = request('languagemother_id')) {
-                $languages = $languages->whereLanguagemother_id($request->language_id);
+                $languages = $languages->whereLanguagemother_id($request->languagemother_id);
             }
             return response()->json([
                 'status' => true,

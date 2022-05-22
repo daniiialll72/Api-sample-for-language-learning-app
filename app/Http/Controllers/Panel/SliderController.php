@@ -32,7 +32,7 @@ class SliderController extends Controller
             }
             if ($keyword = request('kind')) {
                 $sliders =  $sliders->where(function ($query) use ($keyword) {
-                    $query->whereKind($ke);
+                    $query->whereKind($keyword);
                 });
             }
             return response()->json([
