@@ -16,9 +16,12 @@ class LanguageResource extends JsonResource
     {
         return [
             'id' => $this->id,
+
             'languagemother_id' => $this->languagemother_id,
+            'languagemother_name' => $this->languagemother->description,
             'languagemother_image' => $this->languagemother->image,
             'languagemother_abbr' => $this->languagemother->shortdescription,
+            
             'image' => $this->image,
             'shortdescription' => $this->shortdescription,
             'description' => $this->description,
