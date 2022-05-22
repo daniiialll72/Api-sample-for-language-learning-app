@@ -14,6 +14,21 @@ class SliderResource extends JsonResource
      */
     public function toArray($request)
     {
-        return parent::toArray($request);
+        return [
+            'id' => $this->id,
+            'user_id' => $this->user_id,
+            'part_id' => $this->part_id,
+            'kind' => $this->kind,
+            'title' => $this->title,
+            'question' => $this->question,
+            'description' => $this->description,
+            'successmessage' => $this->successmessage,
+            'failmessage' => $this->failmessage,
+            'image' => $this->image,
+            'voice' => $this->voice,
+            'created_at' => $this->created_at,
+            'updated_at' => $this->updated_at,
+            'answers' => SlideranswerResource::collection($this->slideranswers)
+        ];
     }
 }
