@@ -43,6 +43,11 @@ class LanguageController extends Controller
             if ($keyword = request('languagemother_id')) {
                 $languages = $languages->whereLanguagemother_id($request->languagemother_id);
             }
+            if ($keyword = request('languagemother_name')) {
+                $languages = $languages->whereHas('languagemother', function($q) use ($keyword){
+                    $q->where('description', $keyword);
+                 });
+            }
             return response()->json([
                 'status' => true,
                 'data' => LanguageResource::collection($languages->paginate($request->input('per_page') ? $request->input('per_page') : 10)),
