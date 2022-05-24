@@ -40,6 +40,7 @@ class LessonController extends Controller
             return response()->json([
                 'status' => true,
                 'data' => LessonResource::collection($lessons->paginate($request->input('per_page') ? $request->input('per_page') : 10)),
+                'count' => LessonResource::collection($lessons->paginate($request->input('per_page') ? $request->input('per_page') : 10))->count(),
             ], Response::HTTP_OK);
         } catch (\Throwable $th) {
             return response()->json([

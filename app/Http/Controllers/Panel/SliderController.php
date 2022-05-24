@@ -38,6 +38,7 @@ class SliderController extends Controller
             return response()->json([
                 'status' => true,
                 'data' => SliderResource::collection($sliders->paginate($request->input('per_page') ? $request->input('per_page') : 10)),
+                'count' => SliderResource::collection($sliders->paginate($request->input('per_page') ? $request->input('per_page') : 10))->count(),
             ], Response::HTTP_OK);
         } catch (\Throwable $th) {
             return response()->json([
