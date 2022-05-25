@@ -36,8 +36,8 @@ class PeriodController extends Controller
 
             return response()->json([
                 'status' => true,
+                'count' => $periods->get()->count(),
                 'data' => PeriodResource::collection($periods->paginate($request->input('per_page') ? $request->input('per_page') : 10)),
-                'count' => PeriodResource::collection($periods->paginate($request->input('per_page') ? $request->input('per_page') : 10))->count(),
             ], Response::HTTP_OK);
         } catch (\Throwable $th) {
             return response()->json([

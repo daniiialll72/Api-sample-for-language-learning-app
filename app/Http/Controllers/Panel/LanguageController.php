@@ -51,7 +51,7 @@ class LanguageController extends Controller
             return response()->json([
                 'status' => true,
                 'data' => LanguageResource::collection($languages->paginate($request->input('per_page') ? $request->input('per_page') : 10)),
-                'count' => LanguageResource::collection($languages->paginate($request->input('per_page') ? $request->input('per_page') : 10))->count(),
+                'count' => LanguageResource::collection($languages->get())->count(),
             ], Response::HTTP_OK);
         } catch (\Throwable $th) {
             return response()->json([

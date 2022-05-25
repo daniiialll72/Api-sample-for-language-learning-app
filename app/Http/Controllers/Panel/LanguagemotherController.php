@@ -28,8 +28,8 @@ class LanguagemotherController extends Controller
             }
             return response()->json([
                 'status' => true,
+                'count' => $query->get()->count(),
                 'data' => LanguagemotherResource::collection($query->paginate($request->input('per_page') ? $request->input('per_page') : 10)),
-                'count' => LanguagemotherResource::collection($query->paginate($request->input('per_page') ? $request->input('per_page') : 10))->count(),
             ], Response::HTTP_OK);
         } catch (\Throwable $th) {
             return response()->json([

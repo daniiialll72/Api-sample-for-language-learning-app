@@ -38,8 +38,8 @@ class PartController extends Controller
             }
             return response()->json([
                 'status' => true,
+                'count' => $parts->get()->count(),
                 'data' => PartResource::collection($parts->paginate($request->input('per_page') ? $request->input('per_page') : 10)),
-                'count' => PartResource::collection($parts->paginate($request->input('per_page') ? $request->input('per_page') : 10))->count(),
             ], Response::HTTP_OK);
         } catch (\Throwable $th) {
             return response()->json([
