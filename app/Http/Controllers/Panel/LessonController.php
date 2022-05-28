@@ -115,9 +115,8 @@ class LessonController extends Controller
      * @param  \App\Models\Level  $level
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Request $request)
+    public function destroy(Request $request, Lesson $lesson)
     {
-        $lesson = Lesson::find($request->id);
         $lesson->delete();
 
         return response()->json(['success' => 'حذف با موفقیت انجام شد']);

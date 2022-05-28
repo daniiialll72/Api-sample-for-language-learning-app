@@ -121,9 +121,8 @@ class PartController extends Controller
      * @param  \App\Models\Level  $level
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Request $request)
+    public function destroy(Request $request, Part $part)
     {
-        $part = Part::find($request->id) ;
         $part->delete() ;
 
         return response()->json(['success' => 'حذف با موفقیت انجام شد']);

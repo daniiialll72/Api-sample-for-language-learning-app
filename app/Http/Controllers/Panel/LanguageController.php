@@ -130,10 +130,9 @@ class LanguageController extends Controller
      * @param  \App\Models\Language  $language
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Request $request)
+    public function destroy(Request $request, Language $language)
     {
         try {
-            $language = Language::find($request->id);
             $language->delete();
 
             return response()->json(['success' => 'حذف با موفقیت انجام شد']);

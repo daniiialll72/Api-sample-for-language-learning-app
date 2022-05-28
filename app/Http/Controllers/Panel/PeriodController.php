@@ -108,10 +108,9 @@ class PeriodController extends Controller
      * @param  \App\Models\Period  $period
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Request $request)
+    public function destroy(Request $request, Period $period)
     {
         try {
-            $period = Period::find($request->id);
             $period->delete();
     
             return response()->json(['success' => 'حذف با موفقیت انجام شد']);

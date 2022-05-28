@@ -118,9 +118,8 @@ class LevelController extends Controller
      * @param  \App\Models\Level  $level
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Request $request)
+    public function destroy(Request $request, Level $level)
     {
-        $level = Level::find($request->id);
         $level->delete();
 
         return response()->json(['success' => 'حذف با موفقیت انجام شد']);

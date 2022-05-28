@@ -120,10 +120,9 @@ class LanguagemotherController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Request $request)
+    public function destroy(Request $request, Languagemother $languagemother)
     {
         try {
-            $languagemother = Languagemother::find($request->id);
             $languagemother->delete();
 
             return response()->json(['success' => 'حذف با موفقیت انجام شد']);
