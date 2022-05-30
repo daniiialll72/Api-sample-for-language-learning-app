@@ -9,6 +9,7 @@ use App\Http\Controllers\panel\PeriodController;
 use App\Http\Controllers\panel\SliderController;
 use App\Http\Controllers\panel\LanguageController;
 use App\Http\Controllers\panel\LanguagemotherController;
+use App\Http\Controllers\panel\TagsController;
 
 /*
 |--------------------------------------------------------------------------
@@ -39,6 +40,8 @@ Route::apiResource('lesson', LessonController::class);
 Route::apiResource('part', PartController::class);
 
 Route::apiResource('slider', SliderController::class);
+
+Route::apiResource('tag', TagsController::class);
 
 // Route::group(['prefix' => 'sliders'], function () {
 //     Route::get('/', [SliderController::class, 'get']);

@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources;
 
+use App\Http\Resources\TagResource;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class SliderResource extends JsonResource
@@ -19,6 +20,7 @@ class SliderResource extends JsonResource
             'user_id' => $this->user_id,
             'part_id' => $this->part_id,
             'kind' => $this->kind,
+            'type' => $this->type,
             'title' => $this->title,
             'question' => $this->question,
             'description' => $this->description,
@@ -28,7 +30,8 @@ class SliderResource extends JsonResource
             'voice' => $this->voice,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
-            'answers' => SlideranswerResource::collection($this->slideranswers)
+            'answers' => SlideranswerResource::collection($this->slideranswers),
+            'tags' => TagResource::collection($this->tags),
         ];
     }
 }

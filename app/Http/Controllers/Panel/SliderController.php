@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\panel;
 
+use App\Models\Tag;
 use App\Models\Slider;
 use App\Models\Slideranswer;
 use Illuminate\Http\Request;
@@ -66,6 +67,7 @@ class SliderController extends Controller
 
             ]);
             $data['user_id'] = '31';
+            $data['type'] = serialize($request->type);
             $data['image'] = $request->image;
             $data['voice'] = $request->voice;
             $data['title'] = config('constants.slider.title.reverse'.$request->kind);
@@ -86,6 +88,11 @@ class SliderController extends Controller
                     if($answer['selected'] === 'true'){
                         $slider->update(['answer' => $slideranswer->id]);
                     }
+                }
+            }
+            if ($request->tags) {
+                foreach ($request->tags as $tag) {
+                    $slider->tags()->attach(Tag::whereTag($tag)->first()->id);
                 }
             }
 
@@ -128,6 +135,11 @@ class SliderController extends Controller
                     if($answer['selected'] === 'true'){
                         $slider->update(['answer' => $slideranswer->id]);
                     }
+                }
+            }
+            if ($request->tags) {
+                foreach ($request->tags as $tag) {
+                    $slider->tags()->sync(Tag::whereTag($tag)->first()->id);
                 }
             }
             return response()->json([

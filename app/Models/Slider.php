@@ -15,6 +15,7 @@ class Slider extends Model
         'user_id',
         'part_id',
         'kind',
+        'type',
         'title',
         'description',
         'oriented',
@@ -29,12 +30,18 @@ class Slider extends Model
 
     ];
 
-    public function slideranswers(){
-        return $this->hasMany(Slideranswer::class) ;
+    public function slideranswers()
+    {
+        return $this->hasMany(Slideranswer::class);
     }
 
-    public function user(){
-        return $this->belongsTo(User::class) ;
+    public function user()
+    {
+        return $this->belongsTo(User::class);
     }
 
+    public function tags()
+    {
+        return $this->belongsToMany(Tag::class,'slider_tags');
+    }
 }
