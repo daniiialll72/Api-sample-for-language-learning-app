@@ -4,7 +4,7 @@ namespace App\Http\Resources;
 
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class LanguageResource extends JsonResource
+class PartResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -16,17 +16,19 @@ class LanguageResource extends JsonResource
     {
         return [
             'id' => $this->id,
-
-            'languagemother_id' => $this->languagemother_id,
-            'languagemother_name' => $this->languagemother->description,
-            'languagemother_image' => $this->languagemother->image,
-            'languagemother_abbr' => $this->languagemother->shortdescription,
-            
+            'language_id' => $this->language_id,
+            'language_name' => $this->language->description,
+            'period_id' => $this->period_id,
+            'period_title' => $this->period->title,
+            'level_id' => $this->level_id,
+            'level_title' => $this->level->title,
+            'lesson_id' => $this->lesson_id,
+            'lesson_title' => $this->lesson->title,
             'image' => $this->image,
-            'shortdescription' => $this->shortdescription,
+            'title' => $this->title,
             'description' => $this->description,
-            'explainlanguage' => $this->explainlanguage,
-            'order_language' => $this->order_language,
+            'order_parts' => $this->order_parts,
+            'hasvocab' => $this->hasvocab,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
         ];

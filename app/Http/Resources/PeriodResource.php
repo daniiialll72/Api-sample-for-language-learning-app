@@ -14,6 +14,16 @@ class PeriodResource extends JsonResource
      */
     public function toArray($request)
     {
-        return parent::toArray($request);
+        return [
+            'id' => $this->id,
+            'language_id' => $this->language_id,
+            'language_name' => $this->language->description,
+            'image' => $this->image,
+            'title' => $this->title,
+            'description' => $this->description,
+            'order_period' => $this->order_period,
+            'created_at' => $this->created_at,
+            'updated_at' => $this->updated_at,
+        ];
     }
 }
