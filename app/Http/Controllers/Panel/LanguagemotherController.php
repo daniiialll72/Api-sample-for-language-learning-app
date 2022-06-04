@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\panel;
+namespace App\Http\Controllers\Panel;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;

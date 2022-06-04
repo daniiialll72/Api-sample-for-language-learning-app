@@ -2,14 +2,14 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\panel\PartController;
-use App\Http\Controllers\panel\LevelController;
-use App\Http\Controllers\panel\LessonController;
-use App\Http\Controllers\panel\PeriodController;
-use App\Http\Controllers\panel\SliderController;
-use App\Http\Controllers\panel\LanguageController;
-use App\Http\Controllers\panel\LanguagemotherController;
-use App\Http\Controllers\panel\TagsController;
+use App\Http\Controllers\Panel\PartController;
+use App\Http\Controllers\Panel\LevelController;
+use App\Http\Controllers\Panel\LessonController;
+use App\Http\Controllers\Panel\PeriodController;
+use App\Http\Controllers\Panel\SliderController;
+use App\Http\Controllers\Panel\LanguageController;
+use App\Http\Controllers\Panel\LanguagemotherController;
+use App\Http\Controllers\Panel\TagsController;
 
 /*
 |--------------------------------------------------------------------------

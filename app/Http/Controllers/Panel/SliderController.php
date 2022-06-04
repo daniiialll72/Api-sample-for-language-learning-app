@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\panel;
+namespace App\Http\Controllers\Panel;
 
 use App\Models\Tag;
 use App\Models\Slider;
@@ -70,8 +70,7 @@ class SliderController extends Controller
             $data['type'] = serialize($request->type);
             $data['image'] = $request->image;
             $data['voice'] = $request->voice;
-            $data['title'] = config('constants.slider.title.reverse'.$request->kind);
-
+            $data['title'] = config('constants.slider.title.reverse.'.$request->kind);
             $slider =  Slider::create($data);
 
             if ($request->answers) {
