@@ -18,18 +18,20 @@ class AuthController extends Controller
     {
         try {
             $validatedData = $request->validate([
-                'first_name' => 'required|max:55',
-                'last_name' => 'required|max:55',
+                'name' => 'required|max:55',
+                'family' => 'required|max:55',
                 'username' => 'required|max:55',
-                'mobile' => 'required|max:55',
-                'password' => 'required'
+                // 'email' => 'required|max:55',
+                'phone' => 'required|max:55',
+                'password' => 'required',
+                'languagemother_id' => 'required'
             ]);
 
             $validatedData['password'] = bcrypt($request->password);
 
             $user = User::create($validatedData);
 
-            $accessToken = $user->createToken('authToken')->accessToken;
+            $accessToken = $user->createToken('authToken')->plainTextToken;
 
             return response(['user' => $user, 'access_token' => $accessToken]);
         } catch (\Throwable $th) {
@@ -53,7 +55,7 @@ class AuthController extends Controller
             }
 
             Auth::attempt($loginData);
-            $accessToken = auth()->user()->createToken('authToken')->accessToken;
+            $accessToken = auth()->user()->createToken('authToken')->plainTextToken;
 
             return response(['user' => new UserResource(auth()->user()), 'access_token' => $accessToken]);
         } catch (\Throwable $th) {
