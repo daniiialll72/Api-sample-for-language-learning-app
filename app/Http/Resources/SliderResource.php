@@ -28,6 +28,7 @@ class SliderResource extends JsonResource
             'failmessage' => $this->failmessage,
             'image' => $this->image,
             'voice' => $this->voice,
+            'order_slider' => $this->order_slider,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
             'answers' => SlideranswerResource::collection($this->slideranswers),
