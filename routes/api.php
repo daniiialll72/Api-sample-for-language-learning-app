@@ -32,7 +32,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-// Route::middleware('auth:sanctum')->group(function () {
+Route::middleware('auth:sanctum')->group(function () {
     Route::apiResource('languagemother', LanguagemotherController::class);
 
     Route::apiResource('language', LanguageController::class);
@@ -49,4 +49,4 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     Route::apiResource('slider', SliderController::class);
 
     Route::apiResource('tag', TagsController::class);
-// });
+});
