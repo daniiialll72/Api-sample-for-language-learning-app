@@ -49,6 +49,21 @@ class LessonController extends Controller
             ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
+
+    public function show(Lesson $lesson)
+    {
+        try {
+            return response()->json([
+                'status' => true,
+                'data' => new LessonResource($lesson)
+            ], Response::HTTP_OK);
+        } catch (\Throwable $th) {
+            return response()->json([
+                'status' => false,
+                'errors' => [$th->getMessage()]
+            ], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+    }
     /**
      * Store a newly created resource in storage.
      *

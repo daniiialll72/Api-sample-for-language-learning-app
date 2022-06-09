@@ -47,6 +47,20 @@ class PeriodController extends Controller
         }
     }
 
+    public function show(Period $period)
+    {
+        try {
+            return response()->json([
+                'status' => true,
+                'data' => new PeriodResource($period)
+            ], Response::HTTP_OK);
+        } catch (\Throwable $th) {
+            return response()->json([
+                'status' => false,
+                'errors' => [$th->getMessage()]
+            ], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+    }
     /**
      * Store a newly created resource in storage.
      *

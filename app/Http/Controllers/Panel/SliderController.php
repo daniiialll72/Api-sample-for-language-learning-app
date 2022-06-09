@@ -27,8 +27,7 @@ class SliderController extends Controller
             $sliders = Slider::query();
             if ($keyword = request('search')) {
                 $sliders =  $sliders->where(function ($query) use ($keyword) {
-                    $query->where('title', 'LIKE', '%' . $keyword . '%')
-                        ->Orwhere('id', 'LIKE', '%' . $keyword . '%');
+                    $query->where('title', 'LIKE', '%' . $keyword . '%');
                 });
             }
             if ($keyword = request('kind')) {
@@ -49,6 +48,22 @@ class SliderController extends Controller
         }
     }
 
+    public function show(Slider $slider)
+    {
+        try {
+            return response()->json([
+                'status' => true,
+                'data' => new SliderResource($slider)
+            ], Response::HTTP_OK);
+        } catch (\Throwable $th) {
+            return response()->json([
+                'status' => false,
+                'errors' => [$th->getMessage()]
+            ], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+    }
+
+
     /**
      * Store a newly created resource in storage.
      *
@@ -66,7 +81,7 @@ class SliderController extends Controller
                 'part_id' => 'required',
 
             ]);
-            $data['user_id'] = '31';
+            $data['user_id'] = Auth::id();
             $data['type'] = serialize($request->type);
             $data['image'] = $request->image;
             $data['voice'] = $request->voice;
