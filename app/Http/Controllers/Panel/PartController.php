@@ -26,15 +26,17 @@ class PartController extends Controller
             $parts = Part::query();
 
             if ($keyword = request('search')) {
-
                 $parts =  $parts->where(function ($query) use ($keyword) {
                     $query->where('title', 'LIKE', '%' . $keyword . '%')
                         ->Orwhere('description', 'LIKE', '%' . $keyword . '%');
                 });
             }
             if ($keyword = request('lesson_id')) {
-
                 $parts = $parts->whereLesson_id($request->lesson_id);
+            }
+            if ($keyword = request('lesson_title')) {
+                $lesson = Lesson::whereDescription($keyword)->first();
+                $parts = $parts->whereLesson_id($lesson->id);
             }
             return response()->json([
                 'status' => true,

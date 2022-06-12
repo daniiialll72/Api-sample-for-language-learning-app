@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Panel;
 
+use App\Models\Level;
 use App\Models\Lesson;
 use App\Models\Period;
 use Illuminate\Http\Request;
@@ -27,15 +28,17 @@ class LessonController extends Controller
             $lessons = Lesson::query();
 
             if ($keyword = request('search')) {
-
                 $lessons =  $lessons->where(function ($query) use ($keyword) {
                     $query->where('title', 'LIKE', '%' . $keyword . '%')
                         ->Orwhere('description', 'LIKE', '%' . $keyword . '%');
                 });
             }
             if ($keyword = request('level_id')) {
-
                 $lessons = $lessons->whereLevel_id($request->level_id);
+            }
+            if ($keyword = request('level_title')) {
+                $level = Level::whereDescription($keyword)->first();
+                $lessons = $lessons->whereLevelid($level->id);
             }
             return response()->json([
                 'status' => true,

@@ -33,8 +33,11 @@ class LevelController extends Controller
                 });
             }
             if ($keyword = request('period_id')) {
-
                 $levels = $levels->wherePeriod_id($request->period_id);
+            }
+            if ($keyword = request('period_title')) {
+                $period = Period::whereDescription($keyword)->first();
+                $levels = $levels->wherePeriod_id($period->id);
             }
             return response()->json([
                 'status' => true,

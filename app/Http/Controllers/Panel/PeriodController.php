@@ -33,6 +33,11 @@ class PeriodController extends Controller
             if ($keyword = request('language_id')) {
                 $periods = $periods->whereLanguage_id($request->language_id);
             }
+            if ($keyword = request('language_name')) {
+                $language = Language::whereDescription($keyword)->first();
+                $periods = $periods->whereLanguage_id($language->id);
+            }
+           
 
             return response()->json([
                 'status' => true,
