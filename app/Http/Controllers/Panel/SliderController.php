@@ -74,19 +74,20 @@ class SliderController extends Controller
     public function store(Request $request)
     {
         try {
-            $data = $request->validate([
+            $request->validate([
 
                 'description' => 'required',
                 'kind' => 'required',
                 'part_id' => 'required',
 
             ]);
-            $data['user_id'] = Auth::id();
-            $data['type'] = serialize($request->type);
-            $data['image'] = $request->image;
-            $data['voice'] = $request->voice;
-            $data['title'] = config('constants.slider.title.reverse.'.$request->kind);
-            $slider =  Slider::create($data);
+            $request->request->add([
+                'user_id' => Auth::id(),
+                'type' => serialize($request->type),
+                'image' => $request->image,
+                'voice' => $request->voice,
+            ]);
+            $slider =  Slider::create($request->all());
 
             if ($request->answers) {
                 foreach ($request->answers as $answer) {
@@ -106,7 +107,8 @@ class SliderController extends Controller
             }
             if ($request->tags) {
                 foreach ($request->tags as $tag) {
-                    $slider->tags()->attach(Tag::whereTag($tag)->first()->id);
+                    if(Tag::whereTag($tag)->first())
+                    $slider->tags()->sync(Tag::whereTag($tag)->first()->id);
                 }
             }
 
@@ -125,18 +127,20 @@ class SliderController extends Controller
     public function update(Request $request, Slider $slider)
     {
         try {
-            $data = $request->validate([
+            $request->validate([
                 'description' => 'required',
                 'kind' => 'required',
                 'part_id' => 'required',
             ]);
 
-            $data['user_id'] = '31';
-            $data['image'] = $request->image;
-            $data['voice'] = $request->voice;
-            $data['title'] = config('constants.slider.title.reverse'.$request->kind);
+            $request->request->add([
+                'user_id' => Auth::id(),
+                'type' => serialize($request->type),
+                'image' => $request->image,
+                'voice' => $request->voice,
+            ]);
 
-            $slider->update($data);
+            $slider->update($request->all());
 
             if ($request->answers) {
                 foreach ($request->answers as $answer) {
@@ -153,6 +157,7 @@ class SliderController extends Controller
             }
             if ($request->tags) {
                 foreach ($request->tags as $tag) {
+                    if(Tag::whereTag($tag)->first())
                     $slider->tags()->sync(Tag::whereTag($tag)->first()->id);
                 }
             }
