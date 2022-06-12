@@ -36,8 +36,8 @@ class LevelController extends Controller
                 $levels = $levels->wherePeriod_id($request->period_id);
             }
             if ($keyword = request('period_title')) {
-                $period = Period::whereDescription($keyword)->first();
-                $levels = $levels->wherePeriod_id($period->id);
+                $period = Period::whereTitle($keyword)->first();
+                $levels = $levels->wherePeriodId($period->id);
             }
             return response()->json([
                 'status' => true,

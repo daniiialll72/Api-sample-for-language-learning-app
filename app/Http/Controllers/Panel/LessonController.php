@@ -37,8 +37,8 @@ class LessonController extends Controller
                 $lessons = $lessons->whereLevel_id($request->level_id);
             }
             if ($keyword = request('level_title')) {
-                $level = Level::whereDescription($keyword)->first();
-                $lessons = $lessons->whereLevelid($level->id);
+                $level = Level::whereTitle($keyword)->first();
+                $lessons = $lessons->whereLevelId($level->id);
             }
             return response()->json([
                 'status' => true,

@@ -35,8 +35,8 @@ class PartController extends Controller
                 $parts = $parts->whereLesson_id($request->lesson_id);
             }
             if ($keyword = request('lesson_title')) {
-                $lesson = Lesson::whereDescription($keyword)->first();
-                $parts = $parts->whereLesson_id($lesson->id);
+                $lesson = Lesson::whereTitle($keyword)->first();
+                $parts = $parts->whereLessonId($lesson->id);
             }
             return response()->json([
                 'status' => true,
