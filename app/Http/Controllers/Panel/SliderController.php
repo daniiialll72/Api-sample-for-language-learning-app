@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Panel;
 
 use App\Models\Tag;
+use App\Models\Part;
 use App\Models\Slider;
 use App\Models\Slideranswer;
 use Illuminate\Http\Request;
@@ -34,6 +35,10 @@ class SliderController extends Controller
                 $sliders =  $sliders->where(function ($query) use ($keyword) {
                     $query->whereKind($keyword);
                 });
+            }
+            if ($keyword = request('part_title')) {
+                $part= Part::whereTitle($keyword)->first();
+                $sliders = $sliders->wherePartId($part->id);
             }
             return response()->json([
                 'status' => true,
@@ -186,6 +191,27 @@ class SliderController extends Controller
             $slider->delete();
 
             return response()->json(['success' => 'حذف با موفقیت انجام شد']);
+        } catch (\Throwable $th) {
+            return response()->json([
+                'status' => false,
+                'errors' => [$th->getMessage()]
+            ], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    public function handleOrder(Request $request)
+    {
+        try {
+            $sliders = Slider::wherePart_id($request->part)->get();
+
+            foreach ($sliders as $slider) {
+                foreach ($request->order as $order) {
+                    if ($order['id'] == $slider->id) {
+                        $slider->update(['order_slider' => $order['position']]);
+                    }
+                }
+            }
+            return response('Update Successfully.', 200);
         } catch (\Throwable $th) {
             return response()->json([
                 'status' => false,
