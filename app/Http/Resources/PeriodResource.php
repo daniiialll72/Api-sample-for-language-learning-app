@@ -17,7 +17,7 @@ class PeriodResource extends JsonResource
         return [
             'id' => $this->id,
             'language_id' => $this->language_id,
-            'language_name' => $this->language->description,
+            'language_name' => $this->language->description ?? '',
             'image' => $this->image,
             'title' => $this->title,
             'description' => $this->description,

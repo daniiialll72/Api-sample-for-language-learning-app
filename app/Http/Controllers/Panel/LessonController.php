@@ -8,6 +8,7 @@ use App\Models\Period;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Validation\Rule;
+use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\LevelResource;
 use App\Http\Resources\LessonResource;
@@ -75,7 +76,7 @@ class LessonController extends Controller
      */
     public function store(Request $request)
     {
-
+        DB::statement('SET FOREIGN_KEY_CHECKS=0');
         try {
             $data = $request->validate([
                 'title' => ['required', 'string', 'max:255', 'unique:levels'],
@@ -107,6 +108,7 @@ class LessonController extends Controller
      */
     public function update(Request $request, Lesson $lesson)
     {
+        DB::statement('SET FOREIGN_KEY_CHECKS=0');
         try {
             $data = $request->validate([
                 'title' => ['required', 'string', 'max:255',  Rule::unique('lessons', 'title')->ignore($lesson->id)],
@@ -145,10 +147,13 @@ class LessonController extends Controller
 
         try {
             $lesson = Lesson::find($request->id);
-
-            $lesson->freeornot == '0' ? $lesson->update(['freeornot' => '1']) : $lesson->update(['freeornot' => '0']);
-
-            return response()->json(['success' => ' با موفقیت انجام شد']);
+            if($lesson){
+                $lesson->freeornot == '0' ? $lesson->update(['freeornot' => '1']) : $lesson->update(['freeornot' => '0']);
+                return response()->json(['success' => ' با موفقیت انجام شد']);
+            }else{
+                return response()->json(['failed' => 'درس یافت نشد']);
+            }
+            
         } catch (\Throwable $th) {
             return response()->json([
                 'status' => false,

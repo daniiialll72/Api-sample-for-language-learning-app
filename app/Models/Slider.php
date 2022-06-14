@@ -44,4 +44,9 @@ class Slider extends Model
     {
         return $this->belongsToMany(Tag::class,'slider_tags');
     }
+
+    public function part()
+    {
+        return $this->belongsTo(Part::class);
+    }
 }

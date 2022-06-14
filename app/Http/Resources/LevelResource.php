@@ -17,9 +17,9 @@ class LevelResource extends JsonResource
         return [
             'id' => $this->id,
             'language_id' => $this->language_id,
-            'language_name' => $this->language->description,
+            'language_name' => $this->language->description ?? '',
             'period_id' => $this->period_id,
-            'period_title' => $this->period->title,
+            'period_title' => $this->period->title ?? '',
             'image' => $this->image,
             'title' => $this->title,
             'description' => $this->description,

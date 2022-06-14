@@ -41,5 +41,10 @@ class Part extends Model
         return $this->hasMany(Vokabeword::class);
 
     }
+    public function sliders(){
+
+        return $this->hasMany(Slider::class);
+
+    }
 
 }
