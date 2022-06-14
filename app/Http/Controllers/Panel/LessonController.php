@@ -149,9 +149,14 @@ class LessonController extends Controller
             $lesson = Lesson::find($request->id);
             if($lesson){
                 $lesson->freeornot == '0' ? $lesson->update(['freeornot' => '1']) : $lesson->update(['freeornot' => '0']);
-                return response()->json(['success' => ' با موفقیت انجام شد']);
+                return response()->json([
+                    'success' => ' با موفقیت انجام شد',
+                    'status' => $lesson->freeornot
+                ]);
             }else{
-                return response()->json(['failed' => 'درس یافت نشد']);
+                return response()->json([
+                    'failed' => 'درس یافت نشد'
+                ]);
             }
             
         } catch (\Throwable $th) {
