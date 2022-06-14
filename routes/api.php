@@ -4,6 +4,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Panel\PartController;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\Client\PerformanceController;
 use App\Http\Controllers\Panel\LevelController;
 use App\Http\Controllers\Panel\LessonController;
 use App\Http\Controllers\Panel\PeriodController;
@@ -41,7 +42,7 @@ Route::middleware('auth:sanctum')->group(function () {
 
     Route::apiResource('level', LevelController::class);
 
-    Route::post('lesson/changeFreeStatus', [LessonController::class, 'changeFreeStatus']);
+    Route::get('lesson/changeFreeStatus', [LessonController::class, 'changeFreeStatus']);
     Route::apiResource('lesson', LessonController::class);
 
     Route::apiResource('part', PartController::class);
@@ -49,4 +50,10 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::apiResource('slider', SliderController::class);
 
     Route::apiResource('tag', TagsController::class);
+
+
+
+    //client API
+
+    Route::post('performance/setAnswer', [PerformanceController::class, 'setAnswer']);
 });
