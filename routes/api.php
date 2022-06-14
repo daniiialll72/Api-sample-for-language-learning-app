@@ -41,7 +41,7 @@ Route::middleware('auth:sanctum')->group(function () {
 
     Route::apiResource('level', LevelController::class);
 
-    Route::get('lesson/changeFreeStatus', [LessonController::class, 'changeFreeStatus']);
+    Route::post('lesson/changeFreeStatus', [LessonController::class, 'changeFreeStatus']);
     Route::apiResource('lesson', LessonController::class);
 
     Route::apiResource('part', PartController::class);
