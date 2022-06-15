@@ -26,6 +26,7 @@ class SliderResource extends JsonResource
             'question' => $this->question,
             'description' => $this->description,
             'oriented' => $this->oriented,
+            'answer' => $this->answer,
             'successmessage' => $this->successmessage,
             'failmessage' => $this->failmessage,
             'image' => $this->image,
