@@ -38,7 +38,7 @@ Route::middleware('auth:sanctum')->group(function () {
 
     Route::apiResource('language', LanguageController::class);
 
-    Route::apiResource('period', PeriodController::class);
+    Route::apiResource('course', PeriodController::class);
 
     Route::apiResource('level', LevelController::class);
 
