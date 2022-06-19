@@ -113,7 +113,7 @@ class SliderController extends Controller
             if ($request->tags) {
                 foreach ($request->tags as $tag) {
                     if(Tag::whereTag($tag)->first())
-                    $slider->tags()->sync(Tag::whereTag($tag)->first()->id);
+                    $slider->tags()->attach(Tag::whereTag($tag)->first()->id);
                 }
             }
 
@@ -161,9 +161,10 @@ class SliderController extends Controller
                 }
             }
             if ($request->tags) {
+                $slider->tags()->detach();
                 foreach ($request->tags as $tag) {
                     if(Tag::whereTag($tag)->first())
-                    $slider->tags()->sync(Tag::whereTag($tag)->first()->id);
+                    $slider->tags()->attach(Tag::whereTag($tag)->first()->id);
                 }
             }
             return response()->json([

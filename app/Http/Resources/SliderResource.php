@@ -21,7 +21,7 @@ class SliderResource extends JsonResource
             'part_id' => $this->part_id,
             'part_title' => $this->part->title ?? '',
             'kind' => $this->kind,
-            'type' => $this->type,
+            'type' => unserialize($this->type),
             'title' => $this->title,
             'question' => $this->question,
             'description' => $this->description,
