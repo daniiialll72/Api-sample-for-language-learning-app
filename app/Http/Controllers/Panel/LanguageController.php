@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\panel;
+namespace App\Http\Controllers\Panel;
 
 use App\Models\User;
 use App\Models\Language;
@@ -41,11 +41,32 @@ class LanguageController extends Controller
                 });
             }
             if ($keyword = request('languagemother_id')) {
-                $languages = $languages->whereLanguagemother_id($request->language_id);
+                $languages = $languages->whereLanguagemother_id($request->languagemother_id);
+            }
+            if ($keyword = request('languagemother_name')) {
+                $languages = $languages->whereHas('languagemother', function($q) use ($keyword){
+                    $q->where('description', $keyword);
+                 });
             }
             return response()->json([
                 'status' => true,
                 'data' => LanguageResource::collection($languages->paginate($request->input('per_page') ? $request->input('per_page') : 10)),
+                'count' => LanguageResource::collection($languages->get())->count(),
+            ], Response::HTTP_OK);
+        } catch (\Throwable $th) {
+            return response()->json([
+                'status' => false,
+                'errors' => [$th->getMessage()]
+            ], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    public function show(Language $language)
+    {
+        try {
+            return response()->json([
+                'status' => true,
+                'data' => new LanguageResource($language)
             ], Response::HTTP_OK);
         } catch (\Throwable $th) {
             return response()->json([
@@ -78,7 +99,6 @@ class LanguageController extends Controller
             return response()->json([
                 'status' => true,
             ], Response::HTTP_CREATED);
-
         } catch (\Throwable $th) {
             return response()->json([
                 'status' => false,
@@ -105,20 +125,18 @@ class LanguageController extends Controller
                 'explainlanguage' => ['required', 'string'],
                 'image' => ['required', 'string', 'max:255'],
             ]);
-    
+
             $language->update($data);
 
             return response()->json([
                 'status' => true,
             ], Response::HTTP_CREATED);
-            
         } catch (\Throwable $th) {
             return response()->json([
                 'status' => false,
                 'errors' => [$th->getMessage()]
             ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
-  
     }
 
     /**
@@ -127,14 +145,12 @@ class LanguageController extends Controller
      * @param  \App\Models\Language  $language
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Request $request)
+    public function destroy(Request $request, Language $language)
     {
-         try {
-            $language = Language::find($request->id);
+        try {
             $language->delete();
 
             return response()->json(['success' => 'حذف با موفقیت انجام شد']);
-
         } catch (\Throwable $th) {
             return response()->json([
                 'status' => false,

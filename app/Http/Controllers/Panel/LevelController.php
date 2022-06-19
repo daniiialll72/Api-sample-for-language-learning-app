@@ -2,16 +2,16 @@
 
 namespace App\Http\Controllers\Panel;
 
+use App\Models\Level;
 use App\Models\Period;
-use App\Models\Language;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Validation\Rule;
-use App\Http\Controllers\Controller;
-use App\Http\Resources\PeriodResource;
+use App\Http\Resources\LevelResource;
 use Illuminate\Support\Facades\Session;
+use App\Http\Controllers\Controller;
 
-class PeriodController extends Controller
+class LevelController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -21,28 +21,28 @@ class PeriodController extends Controller
 
     public function index(Request $request)
     {
+
         try {
-            $periods = Period::query();
+            $levels = Level::query();
 
             if ($keyword = request('search')) {
-                $periods =  $periods->where(function ($query) use ($keyword) {
+
+                $levels =  $levels->where(function ($query) use ($keyword) {
                     $query->where('title', 'LIKE', '%' . $keyword . '%')
                         ->Orwhere('description', 'LIKE', '%' . $keyword . '%');
                 });
             }
-            if ($keyword = request('language_id')) {
-                $periods = $periods->whereLanguage_id($request->language_id);
+            if ($keyword = request('period_id')) {
+                $levels = $levels->wherePeriod_id($request->period_id);
             }
-            if ($keyword = request('language_name')) {
-                $language = Language::whereDescription($keyword)->first();
-                $periods = $periods->whereLanguage_id($language->id);
+            if ($keyword = request('period_title')) {
+                $period = Period::whereTitle($keyword)->first();
+                $levels = $levels->wherePeriodId($period->id);
             }
-           
-
             return response()->json([
                 'status' => true,
-                'count' => $periods->get()->count(),
-                'data' => PeriodResource::collection($periods->paginate($request->input('per_page') ? $request->input('per_page') : 10)),
+                'count' => $levels->get()->count(),
+                'data' => LevelResource::collection($levels->paginate($request->input('per_page') ? $request->input('per_page') : 10))
             ], Response::HTTP_OK);
         } catch (\Throwable $th) {
             return response()->json([
@@ -52,12 +52,13 @@ class PeriodController extends Controller
         }
     }
 
-    public function show(Period $period)
+
+    public function show(Level $level)
     {
         try {
             return response()->json([
                 'status' => true,
-                'data' => new PeriodResource($period)
+                'data' => new LevelResource($level)
             ], Response::HTTP_OK);
         } catch (\Throwable $th) {
             return response()->json([
@@ -77,17 +78,21 @@ class PeriodController extends Controller
 
         try {
             $data = $request->validate([
-                'title' => ['required', 'string', 'max:255', 'unique:periods'],
-                'description' => ['required'],
+                'title' => ['required', 'string', 'max:255', 'unique:levels'],
+                'description' => ['required', 'string', 'unique:levels'],
                 'image' => ['required', 'string', 'max:255'],
-                'language_id' => ['required', 'string', 'max:255'],
+                'period_id' => ['required', 'string', 'max:255'],
+                'language_id'  => ['required', 'string', 'max:255']
             ]);
 
-            Period::create($data);
+            $data['languagemother_id'] = $request->languagemother_id;
+
+            Level::create($data);
 
             return response()->json([
                 'status' => true,
             ], Response::HTTP_CREATED);
+
         } catch (\Throwable $th) {
             return response()->json([
                 'status' => false,
@@ -95,24 +100,29 @@ class PeriodController extends Controller
             ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
-
-    public function update(Request $request, Period $period)
+    /**
+     * Update the specified resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  \App\Models\Level  $level
+     * @return \Illuminate\Http\Response
+     */
+    public function update(Request $request, Level $level)
     {
-
         try {
-
             $data = $request->validate([
-                'title' => ['required', 'string', 'max:255',  Rule::unique('periods', 'title')->ignore($period->id)],
-                'description' => ['required'],
+                'title' => ['required', 'string', 'max:255',  Rule::unique('levels', 'title')->ignore($level->id)],
+                'description' => ['required', 'string', Rule::unique('levels', 'description')->ignore($level->id)],
                 'image' => ['required', 'string', 'max:255'],
-
+    
             ]);
-
-            $period->update($data);
+    
+            $level->update($data);
 
             return response()->json([
                 'status' => true,
             ], Response::HTTP_CREATED);
+            
         } catch (\Throwable $th) {
             return response()->json([
                 'status' => false,
@@ -124,22 +134,13 @@ class PeriodController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Models\Period  $period
+     * @param  \App\Models\Level  $level
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Request $request, Period $period)
+    public function destroy(Request $request, Level $level)
     {
-        try {
-            $period->delete();
-    
-            return response()->json(['success' => 'حذف با موفقیت انجام شد']);
+        $level->delete();
 
-        } catch (\Throwable $th) {
-            return response()->json([
-                'status' => false,
-                'errors' => [$th->getMessage()]
-            ], Response::HTTP_INTERNAL_SERVER_ERROR);
-        }
-      
+        return response()->json(['success' => 'حذف با موفقیت انجام شد']);
     }
 }

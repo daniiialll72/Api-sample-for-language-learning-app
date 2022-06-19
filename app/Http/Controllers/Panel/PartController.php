@@ -2,16 +2,16 @@
 
 namespace App\Http\Controllers\Panel;
 
-use App\Models\Period;
-use App\Models\Language;
+use App\Models\Lesson;
+use App\Models\Part;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Validation\Rule;
 use App\Http\Controllers\Controller;
-use App\Http\Resources\PeriodResource;
+use App\Http\Resources\PartResource;
 use Illuminate\Support\Facades\Session;
 
-class PeriodController extends Controller
+class PartController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -21,28 +21,27 @@ class PeriodController extends Controller
 
     public function index(Request $request)
     {
+
         try {
-            $periods = Period::query();
+            $parts = Part::query();
 
             if ($keyword = request('search')) {
-                $periods =  $periods->where(function ($query) use ($keyword) {
+                $parts =  $parts->where(function ($query) use ($keyword) {
                     $query->where('title', 'LIKE', '%' . $keyword . '%')
                         ->Orwhere('description', 'LIKE', '%' . $keyword . '%');
                 });
             }
-            if ($keyword = request('language_id')) {
-                $periods = $periods->whereLanguage_id($request->language_id);
+            if ($keyword = request('lesson_id')) {
+                $parts = $parts->whereLesson_id($request->lesson_id);
             }
-            if ($keyword = request('language_name')) {
-                $language = Language::whereDescription($keyword)->first();
-                $periods = $periods->whereLanguage_id($language->id);
+            if ($keyword = request('lesson_title')) {
+                $lesson = Lesson::whereTitle($keyword)->first();
+                $parts = $parts->whereLessonId($lesson->id);
             }
-           
-
             return response()->json([
                 'status' => true,
-                'count' => $periods->get()->count(),
-                'data' => PeriodResource::collection($periods->paginate($request->input('per_page') ? $request->input('per_page') : 10)),
+                'count' => $parts->get()->count(),
+                'data' => PartResource::collection($parts->paginate($request->input('per_page') ? $request->input('per_page') : 10)),
             ], Response::HTTP_OK);
         } catch (\Throwable $th) {
             return response()->json([
@@ -52,12 +51,12 @@ class PeriodController extends Controller
         }
     }
 
-    public function show(Period $period)
+    public function show(Part $part)
     {
         try {
             return response()->json([
                 'status' => true,
-                'data' => new PeriodResource($period)
+                'data' => new PartResource($part)
             ], Response::HTTP_OK);
         } catch (\Throwable $th) {
             return response()->json([
@@ -76,15 +75,23 @@ class PeriodController extends Controller
     {
 
         try {
+        
             $data = $request->validate([
-                'title' => ['required', 'string', 'max:255', 'unique:periods'],
+                'title' => ['required', 'string', 'max:255', 'unique:levels'],
                 'description' => ['required'],
                 'image' => ['required', 'string', 'max:255'],
                 'language_id' => ['required', 'string', 'max:255'],
+                'period_id' => ['required', 'string', 'max:255'],
+                'level_id' => ['required', 'string', 'max:255'],
+                'lesson_id' => ['required', 'string', 'max:255'],
             ]);
-
-            Period::create($data);
-
+    
+            if($request->hasvocab == "hasvocab"){
+                $data['hasvocab'] = "1" ;
+            }
+    
+            Part::create($data);
+    
             return response()->json([
                 'status' => true,
             ], Response::HTTP_CREATED);
@@ -95,20 +102,24 @@ class PeriodController extends Controller
             ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
-
-    public function update(Request $request, Period $period)
+    /**
+     * Update the specified resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  \App\Models\Part  $part
+     * @return \Illuminate\Http\Response
+     */
+    public function update(Request $request, Part $part)
     {
-
         try {
-
             $data = $request->validate([
-                'title' => ['required', 'string', 'max:255',  Rule::unique('periods', 'title')->ignore($period->id)],
+                'title' => ['required', 'string', 'max:255',  Rule::unique('parts' , 'title')->ignore($part->id) ],
                 'description' => ['required'],
                 'image' => ['required', 'string', 'max:255'],
-
+    
             ]);
-
-            $period->update($data);
+    
+            $part->update($data) ;
 
             return response()->json([
                 'status' => true,
@@ -124,22 +135,13 @@ class PeriodController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Models\Period  $period
+     * @param  \App\Models\Level  $level
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Request $request, Period $period)
+    public function destroy(Request $request, Part $part)
     {
-        try {
-            $period->delete();
-    
-            return response()->json(['success' => 'حذف با موفقیت انجام شد']);
+        $part->delete() ;
 
-        } catch (\Throwable $th) {
-            return response()->json([
-                'status' => false,
-                'errors' => [$th->getMessage()]
-            ], Response::HTTP_INTERNAL_SERVER_ERROR);
-        }
-      
+        return response()->json(['success' => 'حذف با موفقیت انجام شد']);
     }
 }

@@ -19,9 +19,49 @@ class User extends Authenticatable
      */
     protected $fillable = [
         'name',
-        'email',
+        'family',
+        'username',
+        'phone',
+        // 'email',
         'password',
+        'languagemother_id'
     ];
+
+    public function area()
+    {
+        return $this->belongsTo(Area::class);
+    }
+
+
+    public function languagemother()
+    {
+        return $this->belongsTo(Languagemother::class);
+    }
+
+    public function sliders()
+    {
+        return $this->hasMany(Slider::class);
+    }
+
+    public function performances()
+    {
+        return $this->hasMany(Performance::class);
+    }
+
+    public function slideranswers()
+    {
+        return $this->hasManyThrough(Slideranswer::class , Slider::class);
+    }
+
+    public function languages()
+    {
+        return $this->belongsToMany(Language::class);
+    }
+
+    public function hasLanguage($language)
+    {
+        return $this->languages->contains('id' , $language->id) ;
+    }
 
     /**
      * The attributes that should be hidden for serialization.

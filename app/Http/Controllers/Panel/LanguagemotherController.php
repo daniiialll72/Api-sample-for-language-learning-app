@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\panel;
+namespace App\Http\Controllers\Panel;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -28,6 +28,7 @@ class LanguagemotherController extends Controller
             }
             return response()->json([
                 'status' => true,
+                'count' => $query->get()->count(),
                 'data' => LanguagemotherResource::collection($query->paginate($request->input('per_page') ? $request->input('per_page') : 10)),
             ], Response::HTTP_OK);
         } catch (\Throwable $th) {
@@ -73,9 +74,19 @@ class LanguagemotherController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show(Languagemother $languagemother)
     {
-        //
+        try {
+            return response()->json([
+                'status' => true,
+                'data' => new LanguagemotherResource($languagemother)
+            ], Response::HTTP_OK);
+        } catch (\Throwable $th) {
+            return response()->json([
+                'status' => false,
+                'errors' => [$th->getMessage()]
+            ], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
     }
 
     /**
@@ -119,10 +130,9 @@ class LanguagemotherController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Request $request)
+    public function destroy(Request $request, Languagemother $languagemother)
     {
         try {
-            $languagemother = Languagemother::find($request->id);
             $languagemother->delete();
 
             return response()->json(['success' => 'حذف با موفقیت انجام شد']);
