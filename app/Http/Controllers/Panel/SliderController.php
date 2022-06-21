@@ -148,6 +148,7 @@ class SliderController extends Controller
             $slider->update($request->all());
 
             if ($request->answers) {
+                $slider->slideranswers()->delete();
                 foreach ($request->answers as $answer) {
                     $slideranswer =  $slider->slideranswers()->updateOrCreate([
                         'answertext' => isset($answer['answerthisquestion']) ? $answer['answerthisquestion'] : '',
