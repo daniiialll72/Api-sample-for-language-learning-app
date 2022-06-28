@@ -29,12 +29,14 @@ Route::group(['prefix' => 'auth'], function () {
     Route::post('/login', [AuthController::class, 'login']);
 });
 
+Route::apiResource('languagemother', LanguagemotherController::class);
+
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-Route::middleware('auth:sanctum')->group(function () {
-    Route::apiResource('languagemother', LanguagemotherController::class);
+// Route::middleware('auth:sanctum')->group(function () {
+   
 
     Route::apiResource('language', LanguageController::class);
 
@@ -56,4 +58,4 @@ Route::middleware('auth:sanctum')->group(function () {
     //client API
 
     Route::post('performance/setAnswer', [PerformanceController::class, 'setAnswer']);
-});
+// });
