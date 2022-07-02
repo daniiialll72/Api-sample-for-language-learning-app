@@ -25,8 +25,8 @@ use App\Http\Controllers\Panel\TagsController;
 */
 
 Route::group(['prefix' => 'auth'], function () {
-    Route::post('/register', [AuthController::class, 'register']);
-    Route::post('/login', [AuthController::class, 'login']);
+    Route::any('/register', [AuthController::class, 'register']);
+    Route::any('/login', [AuthController::class, 'login']);
 });
 
 Route::apiResource('languagemother', LanguagemotherController::class);
@@ -35,7 +35,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-// Route::middleware('auth:sanctum')->group(function () {
+Route::middleware('auth:sanctum')->group(function () {
    
 
     Route::apiResource('language', LanguageController::class);
@@ -58,4 +58,4 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     //client API
 
     Route::post('performance/setAnswer', [PerformanceController::class, 'setAnswer']);
-// });
+});

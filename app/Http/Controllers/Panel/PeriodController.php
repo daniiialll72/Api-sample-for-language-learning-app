@@ -52,12 +52,12 @@ class PeriodController extends Controller
         }
     }
 
-    public function show(Period $period)
+    public function show(Period $course)
     {
         try {
             return response()->json([
                 'status' => true,
-                'data' => new PeriodResource($period)
+                'data' => new PeriodResource($course)
             ], Response::HTTP_OK);
         } catch (\Throwable $th) {
             return response()->json([
@@ -74,7 +74,6 @@ class PeriodController extends Controller
      */
     public function store(Request $request)
     {
-
         try {
             $data = $request->validate([
                 'title' => ['required', 'string', 'max:255', 'unique:periods'],
@@ -96,19 +95,19 @@ class PeriodController extends Controller
         }
     }
 
-    public function update(Request $request, Period $period)
+    public function update(Request $request, Period $course)
     {
 
         try {
 
             $data = $request->validate([
-                'title' => ['required', 'string', 'max:255',  Rule::unique('periods', 'title')->ignore($period->id)],
+                'title' => ['required', 'string', 'max:255',  Rule::unique('periods', 'title')->ignore($course->id)],
                 'description' => ['required'],
                 'image' => ['required', 'string', 'max:255'],
 
             ]);
 
-            $period->update($data);
+            $course->update($data);
 
             return response()->json([
                 'status' => true,
@@ -127,10 +126,10 @@ class PeriodController extends Controller
      * @param  \App\Models\Period  $period
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Request $request, Period $period)
+    public function destroy(Request $request, Period $course)
     {
         try {
-            $period->delete();
+            $course->delete();
     
             return response()->json(['success' => 'حذف با موفقیت انجام شد']);
 
