@@ -55,9 +55,9 @@ class LanguagemotherController extends Controller
                 'image' => ['required'],
             ]);
 
-            // $media = $request->image;
-            // $path = $media->store('images','public');
-            // $data['image'] = $path;
+            $media = $request->image;
+            $path = $media->store('images','public');
+            $data['image'] = $path;
 
             Languagemother::create($data);
 
