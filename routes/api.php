@@ -23,7 +23,6 @@ use App\Http\Controllers\Panel\TagsController;
 | is assigned the "api" middleware group. Enjoy building your API!
 |
 */
-
 Route::group(['prefix' => 'auth'], function () {
     Route::any('/register', [AuthController::class, 'register']);
     Route::any('/login', [AuthController::class, 'login']);

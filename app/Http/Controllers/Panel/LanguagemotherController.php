@@ -52,8 +52,12 @@ class LanguagemotherController extends Controller
             $data = $request->validate([
                 'shortdescription' => ['required', 'string', 'max:255', 'unique:areas'],
                 'description' => ['required'],
-                'image' => ['required', 'string', 'max:255'],
+                'image' => ['required'],
             ]);
+
+            // $media = $request->image;
+            // $path = $media->store('images','public');
+            // $data['image'] = $path;
 
             Languagemother::create($data);
 
