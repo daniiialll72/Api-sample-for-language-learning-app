@@ -89,8 +89,12 @@ class LanguageController extends Controller
                 'shortdescription' => ['required', 'string', 'max:255'],
                 'description' => ['required'],
                 'explainlanguage' => ['required', 'string', 'max:255'],
-                'image' => ['required', 'string', 'max:255'],
+                'image' => ['required','file'],
             ]);
+
+            $media = $request->image;
+            $path = $media->store('images','public');
+            $data['image'] = $path;
 
             $data['languagemother_id'] = $request->languagemother_id;
 
@@ -123,8 +127,12 @@ class LanguageController extends Controller
                 'shortdescription' => ['required', 'string', 'max:255'],
                 'description' => ['required'],
                 'explainlanguage' => ['required', 'string'],
-                'image' => ['required', 'string', 'max:255'],
+                'image' => ['required','file'],
             ]);
+
+            $media = $request->image;
+            $path = $media->store('images','public');
+            $data['image'] = $path;
 
             $language->update($data);
 

@@ -114,7 +114,17 @@ class LanguagemotherController extends Controller
     public function update(Request $request, Languagemother $languagemother)
     {
         try {
-            $languagemother->update($request->all());
+            $data = $request->validate([
+                'shortdescription' => ['required', 'string', 'max:255', 'unique:areas'],
+                'description' => ['required'],
+                'image' => ['required'],
+            ]);
+
+            $media = $request->image;
+            $path = $media->store('images','public');
+            $data['image'] = $path;
+
+            $languagemother->update($data);
 
             return response()->json([
                 'status' => true,

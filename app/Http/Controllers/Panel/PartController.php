@@ -79,7 +79,7 @@ class PartController extends Controller
             $data = $request->validate([
                 'title' => ['required', 'string', 'max:255', 'unique:levels'],
                 'description' => ['required'],
-                'image' => ['required', 'string', 'max:255'],
+                'image' => ['required'],
                 'language_id' => ['required', 'string', 'max:255'],
                 'period_id' => ['required', 'string', 'max:255'],
                 'level_id' => ['required', 'string', 'max:255'],
@@ -89,6 +89,10 @@ class PartController extends Controller
             if($request->hasvocab == "hasvocab"){
                 $data['hasvocab'] = "1" ;
             }
+
+            $media = $request->image;
+            $path = $media->store('images','public');
+            $data['image'] = $path;
     
             Part::create($data);
     
@@ -115,9 +119,14 @@ class PartController extends Controller
             $data = $request->validate([
                 'title' => ['required', 'string', 'max:255',  Rule::unique('parts' , 'title')->ignore($part->id) ],
                 'description' => ['required'],
-                'image' => ['required', 'string', 'max:255'],
+                'image' => ['required'],
     
             ]);
+
+
+            $media = $request->image;
+            $path = $media->store('images','public');
+            $data['image'] = $path;
     
             $part->update($data) ;
 

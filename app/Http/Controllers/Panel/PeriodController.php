@@ -78,9 +78,13 @@ class PeriodController extends Controller
             $data = $request->validate([
                 'title' => ['required', 'string', 'max:255', 'unique:periods'],
                 'description' => ['required'],
-                'image' => ['required', 'string', 'max:255'],
+                'image' => ['required'],
                 'language_id' => ['required', 'string', 'max:255'],
             ]);
+
+            $media = $request->image;
+            $path = $media->store('images','public');
+            $data['image'] = $path;
 
             Period::create($data);
 
@@ -106,6 +110,10 @@ class PeriodController extends Controller
                 'image' => ['required', 'string', 'max:255'],
 
             ]);
+
+            $media = $request->image;
+            $path = $media->store('images','public');
+            $data['image'] = $path;
 
             $course->update($data);
 

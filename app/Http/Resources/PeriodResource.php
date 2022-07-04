@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources;
 
+use Illuminate\Support\Facades\URL;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class PeriodResource extends JsonResource
@@ -18,7 +19,7 @@ class PeriodResource extends JsonResource
             'id' => $this->id,
             'language_id' => $this->language_id,
             'language_name' => $this->language->description ?? '',
-            'image' => $this->image,
+            'image' => (URL::asset('storage/'.$this->image)),
             'title' => $this->title,
             'description' => $this->description,
             'order_period' => $this->order_period,

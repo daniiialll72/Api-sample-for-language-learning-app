@@ -79,28 +79,33 @@ class SliderController extends Controller
     public function store(Request $request)
     {
         try {
-            $request->validate([
-
+           $data = $request->validate([
                 'description' => 'required',
                 'kind' => 'required',
                 'part_id' => 'required',
 
             ]);
-            $request->request->add([
-                'user_id' => Auth::id(),
-                'type' => serialize($request->type),
-                'image' => $request->image,
-                'voice' => $request->voice,
-            ]);
-            $slider =  Slider::create($request->all());
+
+            $image = $request->image;
+            $image_path = $image->store('images','public');
+
+            $voice= $request->voice;
+            $voice_path = $voice->store('voices','public');
+
+            $data['user_id'] = Auth::id();
+            $data['type'] = serialize($request->type);
+            $data['image'] = $image_path;
+            $data['voice'] = $voice_path;
+
+            $slider = Slider::create($data);
 
             if ($request->answers) {
                 foreach ($request->answers as $answer) {
                     $slideranswer = new Slideranswer(
                         [
                         'answertext' => isset($answer['answerthisquestion']) ? $answer['answerthisquestion'] : '',
-                        'image' => isset($answer['image']) ? $answer['image'] : '' ,
-                        'voice' => isset($answer['voice']) ? $answer['voice'] : '' ,
+                        'image' => isset($answer['image']) ? $answer['image']->store('images','public') : '' ,
+                        'voice' => isset($answer['voice']) ? $answer['voice']->store('voices','public') : '' ,
                     ]);
 
                     $slider->slideranswers()->save($slideranswer);
@@ -138,11 +143,17 @@ class SliderController extends Controller
                 'part_id' => 'required',
             ]);
 
+            $image = $request->image;
+            $image_path = $image->store('images','public');
+
+            $voice= $request->voice;
+            $voice_path = $voice->store('voices','public');
+
             $request->request->add([
                 'user_id' => Auth::id(),
                 'type' => serialize($request->type),
-                'image' => $request->image,
-                'voice' => $request->voice,
+                'image' => $image_path,
+                'voice' => $voice_path,
             ]);
 
             $slider->update($request->all());
@@ -152,8 +163,8 @@ class SliderController extends Controller
                 foreach ($request->answers as $answer) {
                     $slideranswer =  $slider->slideranswers()->updateOrCreate([
                         'answertext' => isset($answer['answerthisquestion']) ? $answer['answerthisquestion'] : '',
-                        'image' => isset($answer['image']) ? $answer['image'] : '' ,
-                        'voice' => isset($answer['voice']) ? $answer['voice'] : '' ,
+                        'image' => isset($answer['image']) ? $answer['image']->store('images','public') : '' ,
+                        'voice' => isset($answer['voice']) ? $answer['voice']->store('voices','public') : '' ,
                     ]);
 
                     if($answer['selected'] === 'true'){

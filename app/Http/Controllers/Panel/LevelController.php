@@ -80,10 +80,14 @@ class LevelController extends Controller
             $data = $request->validate([
                 'title' => ['required', 'string', 'max:255', 'unique:levels'],
                 'description' => ['required', 'string', 'unique:levels'],
-                'image' => ['required', 'string', 'max:255'],
+                'image' => ['required'],
                 'period_id' => ['required', 'string', 'max:255'],
                 'language_id'  => ['required', 'string', 'max:255']
             ]);
+
+            $media = $request->image;
+            $path = $media->store('images','public');
+            $data['image'] = $path;
 
             $data['languagemother_id'] = $request->languagemother_id;
 
@@ -113,9 +117,13 @@ class LevelController extends Controller
             $data = $request->validate([
                 'title' => ['required', 'string', 'max:255',  Rule::unique('levels', 'title')->ignore($level->id)],
                 'description' => ['required', 'string', Rule::unique('levels', 'description')->ignore($level->id)],
-                'image' => ['required', 'string', 'max:255'],
+                'image' => ['required'],
     
             ]);
+
+            $media = $request->image;
+            $path = $media->store('images','public');
+            $data['image'] = $path;
     
             $level->update($data);
 

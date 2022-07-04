@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources;
 
+use Illuminate\Support\Facades\URL;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class LanguageResource extends JsonResource
@@ -22,7 +23,7 @@ class LanguageResource extends JsonResource
             'languagemother_image' => $this->languagemother->image,
             'languagemother_abbr' => $this->languagemother->shortdescription ?? '',
             
-            'image' => $this->image,
+            'image' => (URL::asset('storage/'.$this->image)),
             'shortdescription' => $this->shortdescription,
             'description' => $this->description,
             'explainlanguage' => $this->explainlanguage,

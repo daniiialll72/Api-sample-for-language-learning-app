@@ -3,6 +3,7 @@
 namespace App\Http\Resources;
 
 use App\Http\Resources\TagResource;
+use Illuminate\Support\Facades\URL;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class SliderResource extends JsonResource
@@ -29,8 +30,8 @@ class SliderResource extends JsonResource
             'answer' => $this->answer,
             'successmessage' => $this->successmessage,
             'failmessage' => $this->failmessage,
-            'image' => $this->image,
-            'voice' => $this->voice,
+            'image' => (URL::asset('storage/'.$this->image)),
+            'voice' => (URL::asset('storage/'.$this->voice)),
             'order_slider' => $this->order_slider,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,

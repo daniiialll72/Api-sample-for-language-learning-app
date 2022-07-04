@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources;
 
+use Illuminate\Support\Facades\URL;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class LessonResource extends JsonResource
@@ -22,7 +23,7 @@ class LessonResource extends JsonResource
             'period_title' => $this->period->title ?? '',
             'level_id' => $this->level_id,
             'level_title' => $this->level->title ?? '',
-            'image' => $this->image,
+            'image' => (URL::asset('storage/'.$this->image)),
             'title' => $this->title,
             'description' => $this->description,
             'order_lesson' => $this->order_lesson,

@@ -76,16 +76,19 @@ class LessonController extends Controller
      */
     public function store(Request $request)
     {
-        DB::statement('SET FOREIGN_KEY_CHECKS=0');
         try {
             $data = $request->validate([
                 'title' => ['required', 'string', 'max:255', 'unique:levels'],
                 'description' => ['required'],
-                'image' => ['required', 'string', 'max:255'],
+                'image' => ['required'],
                 'period_id' => ['required', 'string', 'max:255'],
                 'language_id' => ['required', 'string', 'max:255'],
                 'level_id' => ['required', 'string', 'max:255'],
             ]);
+
+            $media = $request->image;
+            $path = $media->store('images','public');
+            $data['image'] = $path;
 
             Lesson::create($data);
 
@@ -108,13 +111,16 @@ class LessonController extends Controller
      */
     public function update(Request $request, Lesson $lesson)
     {
-        DB::statement('SET FOREIGN_KEY_CHECKS=0');
         try {
             $data = $request->validate([
                 'title' => ['required', 'string', 'max:255',  Rule::unique('lessons', 'title')->ignore($lesson->id)],
                 'description' => ['required'],
-                'image' => ['required', 'string', 'max:255'],
+                'image' => ['required'],
             ]);
+
+            $media = $request->image;
+            $path = $media->store('images','public');
+            $data['image'] = $path;
 
             $lesson->update($data);
 

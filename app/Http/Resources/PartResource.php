@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources;
 
+use Illuminate\Support\Facades\URL;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class PartResource extends JsonResource
@@ -24,7 +25,7 @@ class PartResource extends JsonResource
             'level_title' => $this->level->title ?? '',
             'lesson_id' => $this->lesson_id,
             'lesson_title' => $this->lesson->title ?? '',
-            'image' => $this->image,
+            'image' => (URL::asset('storage/'.$this->image)),
             'title' => $this->title,
             'description' => $this->description,
             'order_parts' => $this->order_parts,
