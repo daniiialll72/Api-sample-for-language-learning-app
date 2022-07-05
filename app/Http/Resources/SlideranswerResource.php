@@ -19,8 +19,8 @@ class SlideranswerResource extends JsonResource
             'id' => $this->id,
             'slider_id' => $this->slider_id,
             'answertext' => $this->answertext,
-            'image' => (URL::asset('storage/'.$this->image)),
-            'voice' => (URL::asset('storage/'.$this->voice)),
+            'image' => $this->image,
+            'voice' => $this->voice,
             'question' => $this->question,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at

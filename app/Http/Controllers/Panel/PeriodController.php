@@ -7,6 +7,7 @@ use App\Models\Language;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Validation\Rule;
+use Illuminate\Support\Facades\URL;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\PeriodResource;
 use Illuminate\Support\Facades\Session;
@@ -112,7 +113,7 @@ class PeriodController extends Controller
             ]);
 
             $media = $request->image;
-            $path = $media->store('images','public');
+            $path = is_file($request->image) ? (URL::asset('storage/'.$media->store('images','public'))) : $request->image;
             $data['image'] = $path;
 
             $course->update($data);

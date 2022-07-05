@@ -9,6 +9,7 @@ use App\Models\Slideranswer;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Validation\Rule;
+use Illuminate\Support\Facades\URL;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Resources\SliderResource;
@@ -144,10 +145,10 @@ class SliderController extends Controller
             ]);
 
             $image = $request->image;
-            $image_path = $image->store('images','public');
+            $image_path = is_file($request->image) ? (URL::asset('storage/'.$image->store('images','public'))) : $request->image;
 
             $voice= $request->voice;
-            $voice_path = $voice->store('voices','public');
+            $voice_path = is_file($request->$voice) ? (URL::asset('storage/'.$voice->store('images','public'))) : $request->$voice;
 
             $request->request->add([
                 'user_id' => Auth::id(),
@@ -163,8 +164,8 @@ class SliderController extends Controller
                 foreach ($request->answers as $answer) {
                     $slideranswer =  $slider->slideranswers()->updateOrCreate([
                         'answertext' => isset($answer['answerthisquestion']) ? $answer['answerthisquestion'] : '',
-                        'image' => isset($answer['image']) ? $answer['image']->store('images','public') : '' ,
-                        'voice' => isset($answer['voice']) ? $answer['voice']->store('voices','public') : '' ,
+                        'image' => isset($answer['image']) ? (is_file($answer['image']) ? (URL::asset('storage/'.$answer['image']->store('images','public'))) : $answer['image']) : '' ,
+                        'voice' => isset($answer['voice']) ? (is_file($answer['voice']) ? (URL::asset('storage/'.$answer['voice']->store('voice','public'))) : $answer['voice']) : '' ,
                     ]);
 
                     if($answer['selected'] === 'true'){

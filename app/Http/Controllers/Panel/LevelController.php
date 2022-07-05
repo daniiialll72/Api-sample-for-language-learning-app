@@ -7,9 +7,10 @@ use App\Models\Period;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Validation\Rule;
+use Illuminate\Support\Facades\URL;
+use App\Http\Controllers\Controller;
 use App\Http\Resources\LevelResource;
 use Illuminate\Support\Facades\Session;
-use App\Http\Controllers\Controller;
 
 class LevelController extends Controller
 {
@@ -122,7 +123,7 @@ class LevelController extends Controller
             ]);
 
             $media = $request->image;
-            $path = $media->store('images','public');
+            $path = is_file($request->image) ? (URL::asset('storage/'.$media->store('images','public'))) : $request->image;
             $data['image'] = $path;
     
             $level->update($data);

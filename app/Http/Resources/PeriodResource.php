@@ -19,7 +19,7 @@ class PeriodResource extends JsonResource
             'id' => $this->id,
             'language_id' => $this->language_id,
             'language_name' => $this->language->description ?? '',
-            'image' => (URL::asset('storage/'.$this->image)),
+            'image' => $this->image,
             'title' => $this->title,
             'description' => $this->description,
             'order_period' => $this->order_period,

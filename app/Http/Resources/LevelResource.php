@@ -21,7 +21,7 @@ class LevelResource extends JsonResource
             'language_name' => $this->language->description ?? '',
             'period_id' => $this->period_id,
             'period_title' => $this->period->title ?? '',
-            'image' => (URL::asset('storage/'.$this->image)),
+            'image' => $this->image,
             'title' => $this->title,
             'description' => $this->description,
             'order_level' => $this->order_level,

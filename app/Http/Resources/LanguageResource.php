@@ -23,7 +23,7 @@ class LanguageResource extends JsonResource
             'languagemother_image' => $this->languagemother->image,
             'languagemother_abbr' => $this->languagemother->shortdescription ?? '',
             
-            'image' => (URL::asset('storage/'.$this->image)),
+            'image' => $this->image,
             'shortdescription' => $this->shortdescription,
             'description' => $this->description,
             'explainlanguage' => $this->explainlanguage,

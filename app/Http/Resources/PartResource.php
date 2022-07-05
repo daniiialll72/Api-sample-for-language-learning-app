@@ -25,7 +25,7 @@ class PartResource extends JsonResource
             'level_title' => $this->level->title ?? '',
             'lesson_id' => $this->lesson_id,
             'lesson_title' => $this->lesson->title ?? '',
-            'image' => (URL::asset('storage/'.$this->image)),
+            'image' => $this->image,
             'title' => $this->title,
             'description' => $this->description,
             'order_parts' => $this->order_parts,

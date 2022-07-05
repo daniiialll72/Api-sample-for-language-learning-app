@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Panel;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use App\Models\Languagemother;
+use Illuminate\Support\Facades\URL;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\LanguagemotherResource;
 
@@ -121,7 +122,7 @@ class LanguagemotherController extends Controller
             ]);
 
             $media = $request->image;
-            $path = $media->store('images','public');
+            $path = is_file($request->image) ? (URL::asset('storage/'.$media->store('images','public'))) : $request->image;
             $data['image'] = $path;
 
             $languagemother->update($data);

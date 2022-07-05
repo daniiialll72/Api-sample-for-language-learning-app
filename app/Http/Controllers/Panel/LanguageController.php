@@ -7,6 +7,7 @@ use App\Models\Language;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use App\Models\Languagemother;
+use Illuminate\Support\Facades\URL;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\LanguageResource;
 
@@ -131,7 +132,7 @@ class LanguageController extends Controller
             ]);
 
             $media = $request->image;
-            $path = $media->store('images','public');
+            $path = is_file($request->image) ? (URL::asset('storage/'.$media->store('images','public'))) : $request->image;
             $data['image'] = $path;
 
             $language->update($data);

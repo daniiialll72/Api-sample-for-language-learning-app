@@ -9,6 +9,7 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\URL;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\LevelResource;
 use App\Http\Resources\LessonResource;
@@ -119,7 +120,7 @@ class LessonController extends Controller
             ]);
 
             $media = $request->image;
-            $path = $media->store('images','public');
+            $path = is_file($request->image) ? (URL::asset('storage/'.$media->store('images','public'))) : $request->image;
             $data['image'] = $path;
 
             $lesson->update($data);

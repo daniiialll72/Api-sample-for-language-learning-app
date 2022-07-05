@@ -23,7 +23,7 @@ class LessonResource extends JsonResource
             'period_title' => $this->period->title ?? '',
             'level_id' => $this->level_id,
             'level_title' => $this->level->title ?? '',
-            'image' => (URL::asset('storage/'.$this->image)),
+            'image' => $this->image,
             'title' => $this->title,
             'description' => $this->description,
             'order_lesson' => $this->order_lesson,
