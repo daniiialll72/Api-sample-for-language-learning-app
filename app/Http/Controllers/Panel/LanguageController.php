@@ -94,7 +94,7 @@ class LanguageController extends Controller
             ]);
 
             $media = $request->image;
-            $path = $media->store('images','public');
+            $path = URL::asset('storage/'.$media->store('images','public'));
             $data['image'] = $path;
 
             $data['languagemother_id'] = $request->languagemother_id;

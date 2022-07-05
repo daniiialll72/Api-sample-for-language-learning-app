@@ -88,7 +88,7 @@ class LessonController extends Controller
             ]);
 
             $media = $request->image;
-            $path = $media->store('images','public');
+            $path = URL::asset('storage/'.$media->store('images','public'));
             $data['image'] = $path;
 
             Lesson::create($data);

@@ -88,10 +88,10 @@ class SliderController extends Controller
             ]);
 
             $image = $request->image;
-            $image_path = $image->store('images','public');
+            $image_path = URL::asset('storage/'.$image->store('images','public'));
 
             $voice= $request->voice;
-            $voice_path = $voice->store('voices','public');
+            $voice_path = URL::asset('storage/'.$voice->store('voices','public'));
 
             $data['user_id'] = Auth::id();
             $data['type'] = serialize($request->type);
@@ -105,8 +105,8 @@ class SliderController extends Controller
                     $slideranswer = new Slideranswer(
                         [
                         'answertext' => isset($answer['answerthisquestion']) ? $answer['answerthisquestion'] : '',
-                        'image' => isset($answer['image']) ? $answer['image']->store('images','public') : '' ,
-                        'voice' => isset($answer['voice']) ? $answer['voice']->store('voices','public') : '' ,
+                        'image' => isset($answer['image']) ? URL::asset('storage/'.$answer['image']->store('images','public')) : '' ,
+                        'voice' => isset($answer['voice']) ? URL::asset('storage/'.$answer['voice']->store('voices','public')) : '' ,
                     ]);
 
                     $slider->slideranswers()->save($slideranswer);
