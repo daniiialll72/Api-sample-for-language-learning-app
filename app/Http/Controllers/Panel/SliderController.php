@@ -84,7 +84,8 @@ class SliderController extends Controller
                 'description' => 'required',
                 'kind' => 'required',
                 'part_id' => 'required',
-
+                'image' => 'required|file',
+                'voice' => 'required|file',
             ]);
 
             $image = $request->image;
@@ -142,6 +143,8 @@ class SliderController extends Controller
                 'description' => 'required',
                 'kind' => 'required',
                 'part_id' => 'required',
+                'image' => 'required',
+                'voice' => 'required',
             ]);
 
             $image = $request->image;
