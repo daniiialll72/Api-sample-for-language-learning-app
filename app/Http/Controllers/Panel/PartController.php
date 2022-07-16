@@ -90,10 +90,6 @@ class PartController extends Controller
             if($request->hasvocab == "hasvocab"){
                 $data['hasvocab'] = "1" ;
             }
-
-            $media = $request->image;
-            $path = URL::asset('storage/'.$media->store('images','public'));
-            $data['image'] = $path;
     
             Part::create($data);
     
@@ -123,11 +119,7 @@ class PartController extends Controller
                 'image' => ['required'],
     
             ]);
-
-            $media = $request->image;
-            $path = is_file($request->image) ? (URL::asset('storage/'.$media->store('images','public'))) : $request->image;
-            $data['image'] = $path;
-    
+            
             $part->update($data) ;
 
             return response()->json([

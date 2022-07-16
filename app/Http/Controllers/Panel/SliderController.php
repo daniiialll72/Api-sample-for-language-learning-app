@@ -84,7 +84,8 @@ class SliderController extends Controller
                 'description' => 'required',
                 'kind' => 'required',
                 'part_id' => 'required',
-
+                'image' => 'required|file',
+                'voice' => 'required|file',
             ]);
 
             $image = $request->image;
@@ -142,13 +143,15 @@ class SliderController extends Controller
                 'description' => 'required',
                 'kind' => 'required',
                 'part_id' => 'required',
+                'image' => 'required',
+                'voice' => 'required',
             ]);
 
             $image = $request->image;
             $image_path = is_file($request->image) ? (URL::asset('storage/'.$image->store('images','public'))) : $request->image;
 
             $voice= $request->voice;
-            $voice_path = is_file($request->$voice) ? (URL::asset('storage/'.$voice->store('images','public'))) : $request->$voice;
+            $voice_path = is_file($request->voice) ? (URL::asset('storage/'.$voice->store('voices','public'))) : $request->voice;
 
             $request->request->add([
                 'user_id' => Auth::id(),
