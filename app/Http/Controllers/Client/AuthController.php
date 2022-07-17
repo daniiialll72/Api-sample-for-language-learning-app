@@ -1,15 +1,18 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Client;
 
 use App\Models\User;
+use App\Mail\sendEmail;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use App\Helpers\DatabaseConnection;
 use Illuminate\Support\Facades\App;
+use App\Http\Controllers\Controller;
 use App\Http\Resources\UserResource;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Mail;
 use App\Http\Requests\Api\v1\Auth\LoginRequest;
 use App\Http\Requests\Api\v1\Auth\ConfirmRequest;
 
@@ -45,6 +48,7 @@ class AuthController extends Controller
 
     public function login(Request $request)
     {
+        dd(1);
         try {
             $request->validate([
                 'phone' => 'required|unique:users,phone|max:55',
@@ -52,18 +56,25 @@ class AuthController extends Controller
             ]);
             $phone = $request->input('phone');
             $password = $request->input('password');
-       
+
             $user = User::where('phone', '=', $phone)->first();
             if (!$user) {
-               return response()->json(['success'=>false, 'message' => 'Login Fail, please check phone number']);
+                return response()->json(['success' => false, 'message' => 'Login Fail, please check phone number']);
             }
             if (!Hash::check($password, $user->password)) {
-               return response()->json(['success'=>false, 'message' => 'Login Fail, pls check password']);
+                return response()->json(['success' => false, 'message' => 'Login Fail, pls check password']);
             }
-            $otp = rand(100000,999999);
+            $otp = rand(100000, 999999);
             $user->verify_token = $otp;
             $user->save();
-            //    return response()->json(['success'=>true,'message'=>'success', 'data' => $user]);
+
+            $mailData = [
+                'title' => 'Mail from Menric',
+                'body' => 'your code is ' . $otp,
+            ];
+
+            Mail::to('daniiialllkhalediii@gmail.com')->send(new sendEmail($mailData));
+            return response()->json(['success' => true, 'message' => 'success', 'data' => $user]);
         } catch (\Throwable $th) {
             return response()->json([
                 'status' => false,
