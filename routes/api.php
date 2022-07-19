@@ -26,7 +26,6 @@ use App\Http\Controllers\Panel\TagsController;
 */
 
 //--------------Panel------------------//
-Route::group(['namespace' => 'Panel'], function () {
     Route::group(['prefix' => 'auth'], function () {
         Route::any('/register', [AuthController::class, 'register']);
         Route::any('/login', [AuthController::class, 'login']);
@@ -56,15 +55,12 @@ Route::group(['namespace' => 'Panel'], function () {
 
         Route::apiResource('tag', TagsController::class);
     });
-});
 
 
 
 //--------------Client------------------//
-Route::group(['namespace' => 'Client'], function () {
-    Route::group(['prefix' => 'auth'], function () {
+    Route::group(['prefix' => 'client'], function () {
         Route::any('/register', [ClientAuthController::class, 'register']);
         Route::any('/login', [ClientAuthController::class, 'login']);
     });
     Route::post('performance/setAnswer', [PerformanceController::class, 'setAnswer']);
-});

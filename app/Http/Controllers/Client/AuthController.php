@@ -13,8 +13,10 @@ use App\Http\Resources\UserResource;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
+use Propaganistas\LaravelPhone\PhoneNumber;
 use App\Http\Requests\Api\v1\Auth\LoginRequest;
 use App\Http\Requests\Api\v1\Auth\ConfirmRequest;
+use App\Services\OtpProviderHandler;
 
 class AuthController extends Controller
 {
@@ -48,16 +50,15 @@ class AuthController extends Controller
 
     public function login(Request $request)
     {
-        dd(1);
         try {
             $request->validate([
-                'phone' => 'required|unique:users,phone|max:55',
+                'phone' => 'required|phone:AUTO',
                 'password' => 'required'
             ]);
-            $phone = $request->input('phone');
+            $phone = PhoneNumber::make($request->input('phone'));
             $password = $request->input('password');
 
-            $user = User::where('phone', '=', $phone)->first();
+            $user = User::where('phone', '=', $request->input('phone'))->first();
             if (!$user) {
                 return response()->json(['success' => false, 'message' => 'Login Fail, please check phone number']);
             }
@@ -67,14 +68,10 @@ class AuthController extends Controller
             $otp = rand(100000, 999999);
             $user->verify_token = $otp;
             $user->save();
+ 
+            OtpProviderHandler::sendOtp($phone, $otp);
 
-            $mailData = [
-                'title' => 'Mail from Menric',
-                'body' => 'your code is ' . $otp,
-            ];
-
-            Mail::to('daniiialllkhalediii@gmail.com')->send(new sendEmail($mailData));
-            return response()->json(['success' => true, 'message' => 'success', 'data' => $user]);
+            return response()->json(['success' => true, 'message' => 'success']);
         } catch (\Throwable $th) {
             return response()->json([
                 'status' => false,

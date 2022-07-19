@@ -10,7 +10,9 @@
         "guzzlehttp/guzzle": "^7.2",
         "laravel/framework": "^9.2",
         "laravel/sanctum": "^2.14.1",
-        "laravel/tinker": "^2.7"
+        "laravel/tinker": "^2.7",
+        "propaganistas/laravel-phone": "^4.3",
+        "trez/raygan-sms": "^2.0"
     },
     "require-dev": {
         "fakerphp/faker": "^1.9.1",
