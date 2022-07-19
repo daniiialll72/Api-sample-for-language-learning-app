@@ -32,11 +32,7 @@ use App\Http\Controllers\Panel\TagsController;
     });
 
     Route::apiResource('languagemother', LanguagemotherController::class);
-
-    Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-        return $request->user();
-    });
-
+    
     Route::middleware('auth:sanctum')->group(function () {
 
 
@@ -62,5 +58,6 @@ use App\Http\Controllers\Panel\TagsController;
     Route::group(['prefix' => 'client'], function () {
         Route::any('/register', [ClientAuthController::class, 'register']);
         Route::any('/login', [ClientAuthController::class, 'login']);
+        Route::any('/confirm', [ClientAuthController::class, 'confirm']);
     });
     Route::post('performance/setAnswer', [PerformanceController::class, 'setAnswer']);

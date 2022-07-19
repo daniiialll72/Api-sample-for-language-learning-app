@@ -80,9 +80,4 @@ class AuthController extends Controller
             ], 500);
         }
     }
-
-    public function handleErrors()
-    {
-        return response()->json(['status' => false], Response::HTTP_UNAUTHORIZED);
-    }
 }

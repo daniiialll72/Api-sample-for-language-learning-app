@@ -28,7 +28,7 @@ class AuthController extends Controller
                 'family' => 'required|max:55',
                 'username' => 'required|unique:users,username|max:55',
                 // 'email' => 'required|max:55',
-                'phone' => 'required|max:55',
+                'phone' => 'required|phone:AUTO',
                 'password' => 'required',
                 'languagemother_id' => 'required'
             ]);
@@ -36,10 +36,14 @@ class AuthController extends Controller
             $validatedData['password'] = bcrypt($request->password);
 
             $user = User::create($validatedData);
+            $otp = rand(100000, 999999);
+            $user->verify_token = $otp;
+            $user->save();
 
-            $accessToken = $user->createToken('authToken')->plainTextToken;
+            OtpProviderHandler::sendOtp($user->phone, $otp);
 
-            return response(['user' => $user, 'access_token' => $accessToken]);
+            return response()->json(['success' => true, 'message' => 'success']);
+
         } catch (\Throwable $th) {
             return response()->json([
                 'status' => false,
@@ -68,10 +72,35 @@ class AuthController extends Controller
             $otp = rand(100000, 999999);
             $user->verify_token = $otp;
             $user->save();
- 
+
             OtpProviderHandler::sendOtp($phone, $otp);
 
             return response()->json(['success' => true, 'message' => 'success']);
+        } catch (\Throwable $th) {
+            return response()->json([
+                'status' => false,
+                'errors' => [$th->getMessage()]
+            ], 500);
+        }
+    }
+    public function confirm(Request $request)
+    {
+        try {
+            $request->validate([
+                'phone' => 'required|phone:AUTO',
+                'otp' => 'required',
+            ]);
+            $user = User::where('phone', '=', $request->input('phone'))->first();
+            if (!$user) {
+                return response()->json(['success' => false, 'message' => 'Login Fail, please check phone number']);
+            }
+            if ($user->verify_token != $request->otp) {
+                return response()->json(['success' => false, 'message' => 'Login Fail, pls check otp']);
+            }
+            Auth::login($user);
+            $accessToken = auth()->user()->createToken('authToken')->plainTextToken;
+
+            return response(['user' => new UserResource(auth()->user()), 'access_token' => $accessToken]);
         } catch (\Throwable $th) {
             return response()->json([
                 'status' => false,
@@ -93,10 +122,5 @@ class AuthController extends Controller
                 'errors' => [$th->getMessage()]
             ], 500);
         }
-    }
-
-    public function handleErrors()
-    {
-        return response()->json(['status' => false], Response::HTTP_UNAUTHORIZED);
     }
 }
