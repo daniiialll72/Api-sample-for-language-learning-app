@@ -11,9 +11,8 @@ class OtpProviderHandler
     public static function sendOtp($phone, $otp)
     {
         switch ($phone->getCountry()) {
-
             case 'IR':
-                RayganSms::sendAuthCode($phone, '* Menric * کد یکبار مصرف ورود شما : ' . $otp . ' میباشد .', false);
+                RayganSms::sendAuthCode($phone->formatForMobileDialingInCountry('IR'), '* Menric * کد یکبار مصرف ورود شما : ' . $otp . ' میباشد .', false);
                 break;
             default:
                 $mailData = [
