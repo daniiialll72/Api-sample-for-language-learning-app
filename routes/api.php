@@ -59,5 +59,8 @@ use App\Http\Controllers\Panel\TagsController;
         Route::any('/register', [ClientAuthController::class, 'register']);
         Route::any('/login', [ClientAuthController::class, 'login']);
         Route::any('/confirm', [ClientAuthController::class, 'confirm']);
+        Route::any('/forgot', [ClientAuthController::class, 'forgot']);
+        Route::any('/confirmResetPass', [ClientAuthController::class, 'confirmResetPass']);
+        Route::any('/resetPass', [ClientAuthController::class, 'resetPass']);
     });
     Route::post('performance/setAnswer', [PerformanceController::class, 'setAnswer']);

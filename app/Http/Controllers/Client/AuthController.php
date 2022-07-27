@@ -43,7 +43,6 @@ class AuthController extends Controller
             OtpProviderHandler::sendOtp($user->phone, $otp);
 
             return response()->json(['success' => true, 'message' => 'success']);
-
         } catch (\Throwable $th) {
             return response()->json([
                 'status' => false,
@@ -101,6 +100,74 @@ class AuthController extends Controller
             $accessToken = auth()->user()->createToken('authToken')->plainTextToken;
 
             return response(['user' => new UserResource(auth()->user()), 'access_token' => $accessToken]);
+        } catch (\Throwable $th) {
+            return response()->json([
+                'status' => false,
+                'errors' => [$th->getMessage()]
+            ], 500);
+        }
+    }
+    public function forgot(Request $request)
+    {
+        try {
+            $request->validate([
+                'phone' => 'required|phone:AUTO',
+            ]);
+            $phone = PhoneNumber::make($request->input('phone'));
+            $user = User::where('phone', '=', $request->input('phone'))->first();
+            if (!$user) {
+                return response()->json(['success' => false, 'message' => 'User not exists, please check phone number']);
+            }
+            $otp = rand(100000, 999999);
+            $user->verify_token = $otp;
+            $user->save();
+
+            OtpProviderHandler::sendOtp($phone, $otp);
+
+            return response()->json(['success' => true, 'message' => 'success']);
+        } catch (\Throwable $th) {
+            return response()->json([
+                'status' => false,
+                'errors' => [$th->getMessage()]
+            ], 500);
+        }
+    }
+    public function confirmResetPass(Request $request)
+    {
+        try {
+            $request->validate([
+                'phone' => 'required|phone:AUTO',
+                'otp' => 'required',
+            ]);
+            $user = User::where('phone', '=', $request->input('phone'))->first();
+            if (!$user) {
+                return response()->json(['success' => false, 'message' => 'Reset Pass Fail, please check phone number']);
+            }
+            if ($user->verify_token != $request->otp) {
+                return response()->json(['success' => false, 'message' => 'Reset Pass, pls check otp']);
+            }
+
+            return response()->json(['success' => true, 'message' => 'Code is valid']);
+        } catch (\Throwable $th) {
+            return response()->json([
+                'status' => false,
+                'errors' => [$th->getMessage()]
+            ], 500);
+        }
+    }
+    public function resetPass(Request $request)
+    {
+        try {
+            $request->validate([
+                'phone' => 'required|phone:AUTO',
+                'password' => 'required|string|min:6|confirmed',
+            ]);
+            $user = User::where('phone', '=', $request->input('phone'))->first();
+            if (!$user) {
+                return response()->json(['success' => false, 'message' => 'Reset Pass Fail, please check phone number']);
+            }
+            $user->update($request->only('password'));
+            return response()->json(['success' => true, 'message' => 'Password updated']);
         } catch (\Throwable $th) {
             return response()->json([
                 'status' => false,
