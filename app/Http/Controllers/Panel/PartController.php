@@ -139,10 +139,20 @@ class PartController extends Controller
      * @param  \App\Models\Level  $level
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Request $request, Part $part)
+    public function destroy(Part $part)
     {
-        $part->delete() ;
-
-        return response()->json(['success' => 'حذف با موفقیت انجام شد']);
+        try {
+            if (!$part->sliders()->exists()) {
+                $part->delete();
+                return response()->json(['success' => 'delete completed']);
+            } else {
+                return response()->json(['failed' => 'related model exists...!']);
+            }
+        } catch (\Throwable $th) {
+            return response()->json([
+                'status' => false,
+                'errors' => [$th->getMessage()]
+            ], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
     }
 }

@@ -88,7 +88,7 @@ class LessonController extends Controller
             ]);
 
             $media = $request->image;
-            $path = is_file($request->image) ? (URL::asset('storage/'.$media->store('images','public'))) : $request->image;
+            $path = is_file($request->image) ? (URL::asset('storage/' . $media->store('images', 'public'))) : $request->image;
             $data['image'] = $path;
 
             Lesson::create($data);
@@ -120,7 +120,7 @@ class LessonController extends Controller
             ]);
 
             $media = $request->image;
-            $path = is_file($request->image) ? (URL::asset('storage/'.$media->store('images','public'))) : $request->image;
+            $path = is_file($request->image) ? (URL::asset('storage/' . $media->store('images', 'public'))) : $request->image;
             $data['image'] = $path;
 
             $lesson->update($data);
@@ -142,11 +142,21 @@ class LessonController extends Controller
      * @param  \App\Models\Level  $level
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Request $request, Lesson $lesson)
+    public function destroy(Lesson $lesson)
     {
-        $lesson->delete();
-
-        return response()->json(['success' => 'حذف با موفقیت انجام شد']);
+        try {
+            if (!$lesson->parts()->exists()) {
+                $lesson->delete();
+                return response()->json(['success' => 'delete completed']);
+            } else {
+                return response()->json(['failed' => 'related model exists...!']);
+            }
+        } catch (\Throwable $th) {
+            return response()->json([
+                'status' => false,
+                'errors' => [$th->getMessage()]
+            ], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
     }
 
     public function changeFreeStatus(Request $request)
@@ -154,18 +164,17 @@ class LessonController extends Controller
 
         try {
             $lesson = Lesson::find($request->id);
-            if($lesson){
+            if ($lesson) {
                 $lesson->freeornot == '0' ? $lesson->update(['freeornot' => '1']) : $lesson->update(['freeornot' => '0']);
                 return response()->json([
                     'success' => ' با موفقیت انجام شد',
                     'status' => $lesson->freeornot
                 ]);
-            }else{
+            } else {
                 return response()->json([
                     'failed' => 'درس یافت نشد'
                 ]);
             }
-            
         } catch (\Throwable $th) {
             return response()->json([
                 'status' => false,

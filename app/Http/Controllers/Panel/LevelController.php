@@ -87,7 +87,7 @@ class LevelController extends Controller
             ]);
 
             $media = $request->image;
-            $path = is_file($request->image) ? (URL::asset('storage/'.$media->store('images','public'))) : $request->image;
+            $path = is_file($request->image) ? (URL::asset('storage/' . $media->store('images', 'public'))) : $request->image;
             $data['image'] = $path;
 
             $data['languagemother_id'] = $request->languagemother_id;
@@ -97,7 +97,6 @@ class LevelController extends Controller
             return response()->json([
                 'status' => true,
             ], Response::HTTP_CREATED);
-
         } catch (\Throwable $th) {
             return response()->json([
                 'status' => false,
@@ -119,19 +118,18 @@ class LevelController extends Controller
                 'title' => ['required', 'string', 'max:255',  Rule::unique('levels', 'title')->ignore($level->id)],
                 'description' => ['required', 'string', Rule::unique('levels', 'description')->ignore($level->id)],
                 'image' => ['required'],
-    
+
             ]);
 
             $media = $request->image;
-            $path = is_file($request->image) ? (URL::asset('storage/'.$media->store('images','public'))) : $request->image;
+            $path = is_file($request->image) ? (URL::asset('storage/' . $media->store('images', 'public'))) : $request->image;
             $data['image'] = $path;
-    
+
             $level->update($data);
 
             return response()->json([
                 'status' => true,
             ], Response::HTTP_CREATED);
-            
         } catch (\Throwable $th) {
             return response()->json([
                 'status' => false,
@@ -146,10 +144,20 @@ class LevelController extends Controller
      * @param  \App\Models\Level  $level
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Request $request, Level $level)
+    public function destroy(Level $level)
     {
-        $level->delete();
-
-        return response()->json(['success' => 'حذف با موفقیت انجام شد']);
+        try {
+            if (!$level->lessons()->exists()) {
+                $level->delete();
+                return response()->json(['success' => 'delete completed']);
+            } else {
+                return response()->json(['failed' => 'related model exists...!']);
+            }
+        } catch (\Throwable $th) {
+            return response()->json([
+                'status' => false,
+                'errors' => [$th->getMessage()]
+            ], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
     }
 }

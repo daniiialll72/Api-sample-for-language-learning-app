@@ -38,7 +38,7 @@ class PeriodController extends Controller
                 $language = Language::whereDescription($keyword)->first();
                 $periods = $periods->whereLanguage_id($language->id);
             }
-           
+
 
             return response()->json([
                 'status' => true,
@@ -84,7 +84,7 @@ class PeriodController extends Controller
             ]);
 
             $media = $request->image;
-            $path = is_file($request->image) ? (URL::asset('storage/'.$media->store('images','public'))) : $request->image;
+            $path = is_file($request->image) ? (URL::asset('storage/' . $media->store('images', 'public'))) : $request->image;
             $data['image'] = $path;
 
             Period::create($data);
@@ -113,7 +113,7 @@ class PeriodController extends Controller
             ]);
 
             $media = $request->image;
-            $path = is_file($request->image) ? (URL::asset('storage/'.$media->store('images','public'))) : $request->image;
+            $path = is_file($request->image) ? (URL::asset('storage/' . $media->store('images', 'public'))) : $request->image;
             $data['image'] = $path;
 
             $course->update($data);
@@ -135,19 +135,22 @@ class PeriodController extends Controller
      * @param  \App\Models\Period  $period
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Request $request, Period $course)
+    public function destroy(Period $course)
     {
         try {
-            $course->delete();
-    
-            return response()->json(['success' => 'حذف با موفقیت انجام شد']);
+            if (!$course->levels()->exists()) {
+                $course->delete();
+                return response()->json(['success' => 'delete completed']);
+            } else {
+                return response()->json(['failed' => 'related model exists...!']);
+            }
 
+            return response()->json(['success' => 'حذف با موفقیت انجام شد']);
         } catch (\Throwable $th) {
             return response()->json([
                 'status' => false,
                 'errors' => [$th->getMessage()]
             ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
-      
     }
 }

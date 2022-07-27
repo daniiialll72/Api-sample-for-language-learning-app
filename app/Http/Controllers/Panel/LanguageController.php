@@ -45,9 +45,9 @@ class LanguageController extends Controller
                 $languages = $languages->whereLanguagemother_id($request->languagemother_id);
             }
             if ($keyword = request('languagemother_name')) {
-                $languages = $languages->whereHas('languagemother', function($q) use ($keyword){
+                $languages = $languages->whereHas('languagemother', function ($q) use ($keyword) {
                     $q->where('description', $keyword);
-                 });
+                });
             }
             return response()->json([
                 'status' => true,
@@ -90,11 +90,11 @@ class LanguageController extends Controller
                 'shortdescription' => ['required', 'string', 'max:255'],
                 'description' => ['required'],
                 'explainlanguage' => ['required', 'string', 'max:255'],
-                'image' => ['required','file'],
+                'image' => ['required'],
             ]);
 
             $media = $request->image;
-            $path = is_file($request->image) ? (URL::asset('storage/'.$media->store('images','public'))) : $request->image;
+            $path = is_file($request->image) ? (URL::asset('storage/' . $media->store('images', 'public'))) : $request->image;
             $data['image'] = $path;
 
             $data['languagemother_id'] = $request->languagemother_id;
@@ -128,11 +128,11 @@ class LanguageController extends Controller
                 'shortdescription' => ['required', 'string', 'max:255'],
                 'description' => ['required'],
                 'explainlanguage' => ['required', 'string'],
-                'image' => ['required','file'],
+                'image' => ['required'],
             ]);
 
             $media = $request->image;
-            $path = is_file($request->image) ? (URL::asset('storage/'.$media->store('images','public'))) : $request->image;
+            $path = is_file($request->image) ? (URL::asset('storage/' . $media->store('images', 'public'))) : $request->image;
             $data['image'] = $path;
 
             $language->update($data);
@@ -154,10 +154,15 @@ class LanguageController extends Controller
      * @param  \App\Models\Language  $language
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Request $request, Language $language)
+    public function destroy(Language $language)
     {
         try {
-            $language->delete();
+            if (!$language->periods()->exists()) {
+                $language->delete();
+                return response()->json(['success' => 'delete completed']);
+            } else {
+                return response()->json(['failed' => 'related model exists...!']);
+            }
 
             return response()->json(['success' => 'حذف با موفقیت انجام شد']);
         } catch (\Throwable $th) {

@@ -56,7 +56,7 @@ class LanguagemotherController extends Controller
                 'image' => ['required'],
             ]);
             $media = $request->image;
-            $path = is_file($request->image) ? (URL::asset('storage/'.$media->store('images','public'))) : $request->image;
+            $path = is_file($request->image) ? (URL::asset('storage/' . $media->store('images', 'public'))) : $request->image;
             $data['image'] = $path;
 
             Languagemother::create($data);
@@ -121,7 +121,7 @@ class LanguagemotherController extends Controller
             ]);
 
             $media = $request->image;
-            $path = is_file($request->image) ? (URL::asset('storage/'.$media->store('images','public'))) : $request->image;
+            $path = is_file($request->image) ? (URL::asset('storage/' . $media->store('images', 'public'))) : $request->image;
             $data['image'] = $path;
 
             $languagemother->update($data);
@@ -129,7 +129,6 @@ class LanguagemotherController extends Controller
             return response()->json([
                 'status' => true,
             ], Response::HTTP_CREATED);
-            
         } catch (\Throwable $th) {
             return response()->json([
                 'status' => false,
@@ -144,13 +143,15 @@ class LanguagemotherController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Request $request, Languagemother $languagemother)
+    public function destroy(Languagemother $languagemother)
     {
         try {
-            $languagemother->delete();
-
-            return response()->json(['success' => 'حذف با موفقیت انجام شد']);
-
+            if (!$languagemother->languages()->exists()) {
+                $languagemother->delete();
+                return response()->json(['success' => 'delete completed']);
+            } else {
+                return response()->json(['failed' => 'related model exists...!']);
+            }
         } catch (\Throwable $th) {
             return response()->json([
                 'status' => false,
