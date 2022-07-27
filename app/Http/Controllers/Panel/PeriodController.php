@@ -84,7 +84,7 @@ class PeriodController extends Controller
             ]);
 
             $media = $request->image;
-            $path = URL::asset('storage/'.$media->store('images','public'));
+            $path = is_file($request->image) ? (URL::asset('storage/'.$media->store('images','public'))) : $request->image;
             $data['image'] = $path;
 
             Period::create($data);

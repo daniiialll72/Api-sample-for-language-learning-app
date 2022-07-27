@@ -55,9 +55,8 @@ class LanguagemotherController extends Controller
                 'description' => ['required'],
                 'image' => ['required'],
             ]);
-
             $media = $request->image;
-            $path = URL::asset('storage/'.$media->store('images','public'));
+            $path = is_file($request->image) ? (URL::asset('storage/'.$media->store('images','public'))) : $request->image;
             $data['image'] = $path;
 
             Languagemother::create($data);

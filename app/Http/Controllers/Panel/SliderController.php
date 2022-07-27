@@ -87,12 +87,11 @@ class SliderController extends Controller
                 'image' => 'required|file',
                 'voice' => 'required|file',
             ]);
-
             $image = $request->image;
-            $image_path = URL::asset('storage/'.$image->store('images','public'));
+            $image_path = is_file($request->image) ? (URL::asset('storage/'.$image->store('images','public'))) : $request->image;
 
             $voice= $request->voice;
-            $voice_path = URL::asset('storage/'.$voice->store('voices','public'));
+            $voice_path = is_file($request->voice) ? (URL::asset('storage/'.$voice->store('voices','public'))) : $request->voice;
 
             $data['user_id'] = Auth::id();
             $data['type'] = serialize($request->type);
@@ -106,8 +105,8 @@ class SliderController extends Controller
                     $slideranswer = new Slideranswer(
                         [
                         'answertext' => isset($answer['answerthisquestion']) ? $answer['answerthisquestion'] : '',
-                        'image' => isset($answer['image']) ? URL::asset('storage/'.$answer['image']->store('images','public')) : '' ,
-                        'voice' => isset($answer['voice']) ? URL::asset('storage/'.$answer['voice']->store('voices','public')) : '' ,
+                        'image' => isset($answer['image']) ? (is_file($answer['image']) ? (URL::asset('storage/'.$answer['image']->store('images','public'))) : $answer['image']) : '' ,
+                        'voice' => isset($answer['voice']) ? (is_file($answer['voice']) ? (URL::asset('storage/'.$answer['voice']->store('voice','public'))) : $answer['voice']) : '' ,
                     ]);
 
                     $slider->slideranswers()->save($slideranswer);
